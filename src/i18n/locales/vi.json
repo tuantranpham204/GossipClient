@@ -1,3 +1,28 @@
 {
-    
+    "common": {
+        "loading": "Đang tải...",
+        "error": "Lỗi",
+        "success": "Thành công",
+        "warning": "Cảnh báo",
+        "info": "Thông tin"
+    },
+    "api": {
+      "network_error": "Lỗi mạng: Vui lòng kiểm tra kết nối của bạn.",
+      "general_error": "Lỗi API: Vui lòng thử lại sau.",
+      "success": "Thành công",
+      "unprocessable_entity": "Dữ liệu không hợp lệ",
+      "internal_server_error": "Lỗi máy chủ nội bộ",
+      "unauthorized": "Không có quyền truy cập"
+    },
+    "auth": {
+        "activation_email_sent_title": "Kiểm tra Email của bạn",
+        "activation_email_sent_desc": "Chúng tôi đã gửi liên kết kích hoạt đến địa chỉ email của bạn. Vui lòng kiểm tra hộp thư đến (và thư rác) để kích hoạt tài khoản của bạn.",
+        "activation_success_title": "Tài khoản đã được kích hoạt",
+        "activation_success_desc": "Tài khoản của bạn đã được kích hoạt thành công! Bạn có thể đăng nhập ngay bây giờ.",
+        "activation_invalid_title": "Mã không hợp lệ",
+        "activation_invalid_desc": "Mã kích hoạt không hợp lệ hoặc đã hết hạn. Vui lòng thử đăng ký lại hoặc liên hệ hỗ trợ.",
+        "activation_already_title": "Đã kích hoạt",
+        "activation_already_desc": "Tài khoản của bạn đã được kích hoạt trước đó. Vui lòng đăng nhập.",
+        "back_to_signin": "Quay lại Đăng nhập"
+    }
 }

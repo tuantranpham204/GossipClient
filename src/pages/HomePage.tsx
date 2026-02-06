@@ -136,7 +136,7 @@ const HomePage: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex gap-4 text-gray-400">
-                        <button className="hover:text-white transition-colors"><Settings className="w-5 h-5" /></button>
+                        <button className="hover:text-white transition-colors" title="Chat Settings" aria-label="Chat Settings"><Settings className="w-5 h-5" /></button>
                     </div>
                 </div>
 
@@ -191,16 +191,16 @@ const HomePage: React.FC = () => {
 
                 {/* Message Input */}
                 <div className="h-20 px-6 py-4 flex items-center gap-4 border-t border-white/5 bg-white/[0.02] backdrop-blur-md">
-                    <button className="p-2 bg-white/5 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
+                    <button className="p-2 bg-white/5 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors" title="Add attachment" aria-label="Add attachment">
                         <Plus className="w-5 h-5" />
                     </button>
                     <div className="flex-1 relative">
                         <input type="text" placeholder="Type a message..." className="w-full bg-white/5 border border-white/5 rounded-full py-3 px-5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-brand-500/50 transition-all" />
-                        <button className="absolute right-2 top-1.5 p-1.5 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-yellow-400">
+                        <button className="absolute right-2 top-1.5 p-1.5 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-yellow-400" title="Add emoji" aria-label="Add emoji">
                             <Smile className="w-4 h-4" />
                         </button>
                     </div>
-                     <button className="p-3 bg-brand-600 hover:bg-brand-500 rounded-full text-white shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-105 active:scale-95">
+                     <button className="p-3 bg-brand-600 hover:bg-brand-500 rounded-full text-white shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-105 active:scale-95" title="Send message" aria-label="Send message">
                         <Send className="w-5 h-5 ml-0.5" />
                     </button>
                 </div>

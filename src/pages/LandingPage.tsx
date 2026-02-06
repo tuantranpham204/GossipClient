@@ -45,7 +45,7 @@ const LandingPage: React.FC = () => {
 
           {/* Action Buttons */}
           <div className="w-full space-y-4">
-            <Link to="/home" className="group w-full relative flex justify-center py-3.5 px-4 border border-transparent rounded-2xl text-sm font-medium text-white bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 ring-offset-black transition-all duration-300 backdrop-blur-md overflow-hidden">
+            <Link to="/auth" className="group w-full relative flex justify-center py-3.5 px-4 border border-transparent rounded-2xl text-sm font-medium text-white bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 ring-offset-black transition-all duration-300 backdrop-blur-md overflow-hidden">
               <div className="absolute inset-0 w-0 bg-gradient-to-r from-brand-500/20 to-purple-500/20 transition-all duration-[250ms] ease-out group-hover:w-full opacity-0 group-hover:opacity-100"></div>
               <span className="relative flex items-center">
                 Enter Gossip <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
