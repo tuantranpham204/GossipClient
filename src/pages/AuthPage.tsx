@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useAuthStore } from '../store/useAuthStore';
 import { useSignUpMutation, useSignInMutation } from '../services/auth.service';
 import { Chrome, Sparkles, Mail, Lock, User, CheckCircle, XCircle, AlertCircle, Calendar as CalendarIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -99,7 +100,10 @@ export default function AuthPage() {
             data.message || t("toast.welcome_back")
         );
         navigate('/messages');
-      }
+      },
+      onError: (error) => {
+        useAuthStore.getState().logout();
+      },
     });
   };
 
@@ -121,9 +125,6 @@ export default function AuthPage() {
     signUp(formattedData, {
       onSuccess: (data: any) => {
         setIsSignUpSuccess(true);
-        if (data?.message) {
-            toast.success(data.message);
-        }
       }
     });
   };
