@@ -1,0 +1,210 @@
+import React, { useState, useEffect } from 'react';
+import NavigationSidebar from '../components/NavigationSidebar';
+import { Search, UserCheck, UserPlus, Rss, MessageSquare, Loader2 } from 'lucide-react';
+import defaultAvatar from '../assets/defaultAvatar.jpg';
+import backgroundGif from '../assets/background.gif';
+import { useSearchUsers } from '../services/user.service';
+
+interface UserData {
+  user_id: number;
+  username: string;
+  name: string;
+  surname: string;
+  avatar_data: { url: string } | null;
+  status: string | null;
+  initials?: string; // Kept for fallback logic if needed, though API doesn't seem to return it
+}
+
+const SearchPage: React.FC = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(20); // Default to 20 as per API response example
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedQuery, setDebouncedQuery] = useState('');
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedQuery(searchQuery);
+            setCurrentPage(1);
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
+
+    const { data: searchData, isLoading, isError } = useSearchUsers({
+        q: debouncedQuery,
+        page: currentPage,
+        per_page: itemsPerPage
+    });
+
+    const users = (searchData?.data as UserData[]) || [];
+    const meta = searchData?.meta;
+    const totalPages = meta?.total_pages || 0;
+
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setItemsPerPage(parseInt(e.target.value));
+        setCurrentPage(1);
+    };
+
+  return (
+    <div className="bg-black h-screen w-screen overflow-hidden selection:bg-brand-500 selection:text-white text-white relative">
+        {/* Background Image */}
+         <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+            style={{ backgroundImage: `url(${backgroundGif})` }}
+        ></div>
+
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
+
+        <main className="w-full h-full glass-panel flex relative z-10 border-none">
+            
+            <NavigationSidebar />
+
+            {/* Search Content */}
+            <section className="flex-1 flex flex-col relative overflow-hidden">
+                
+                {/* Search Header */}
+                <div className="p-6 md:p-10 pb-0">
+                    <h1 className="text-3xl font-bold mb-6">Discover People</h1>
+                    <div className="relative max-w-2xl">
+                        <Search className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" />
+                        <input 
+                            type="text" 
+                            placeholder="Search by name, username..." 
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-1 focus:ring-brand-500/50 transition-all text-lg shadow-lg"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </div>
+
+                {/* Results Grid */}
+                <div className="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
+                    
+                    {isLoading ? (
+                        <div className="flex items-center justify-center h-64">
+                            <Loader2 className="w-10 h-10 text-brand-500 animate-spin" />
+                        </div>
+                    ) : isError ? (
+                        <div className="flex items-center justify-center h-64 text-red-400">
+                            Failed to load users. Please try again.
+                        </div>
+                    ) : (
+                        <>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                                {users.map(user => (
+                                    <div key={user.user_id} className="bg-white/5 rounded-2xl p-6 border border-white/5 hover:bg-white/10 transition-all flex flex-col items-center group animate-fade-in-up">
+                                        {user.avatar_data?.url ? (
+                                            <img src={user.avatar_data.url} alt={user.username} className="w-20 h-20 rounded-full object-cover mb-4 ring-2 ring-transparent group-hover:ring-brand-500/50 transition-all" />
+                                        ) : (
+                                            <img src={defaultAvatar} alt={user.username} className="w-20 h-20 rounded-full object-cover mb-4 ring-2 ring-transparent group-hover:ring-brand-500/50 transition-all" />
+                                        )}
+                                        <h3 className="text-lg font-bold text-white text-center">{user.name} {user.surname}</h3>
+                                        <p className="text-sm text-gray-400 mb-4 text-center">@{user.username}</p>
+                                        <div className="flex gap-4 w-full justify-center mt-2">
+                                            {/* Logic for friend status can be improved when API supports it. For now assuming default state or using status if available */}
+                                            {user.status === 'Requested' ? (
+                                                <button title="Friend Request Sent" className="p-2.5 bg-brand-600 text-white rounded-xl transition-all hover:scale-110 relative group">
+                                                    <UserCheck className="w-5 h-5" />
+                                                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></div>
+                                                </button>
+                                            ) : (
+                                                <button title="Add Friend" className="p-2.5 bg-white/5 hover:bg-brand-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
+                                                    <UserPlus className="w-5 h-5" />
+                                                </button>
+                                            )}
+                                            <button title="Follow" className="p-2.5 bg-white/5 hover:bg-pink-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
+                                                <Rss className="w-5 h-5" />
+                                            </button>
+                                            <button title="Message" className="p-2.5 bg-white/5 hover:bg-green-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
+                                                <MessageSquare className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Pagination & Controls */}
+                            {users.length > 0 && (
+                                <div className="flex flex-col md:flex-row items-center justify-center mt-8 gap-6">
+                                    
+                                    {/* Pagination Buttons */}
+                                    <div className="flex gap-2">
+                                        <button 
+                                            className={`px-4 py-2 rounded-lg bg-white/5 text-sm font-medium transition-colors ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10 cursor-pointer'}`}
+                                            onClick={() => handlePageChange(currentPage - 1)}
+                                            disabled={currentPage === 1}
+                                        >
+                                            Previous
+                                        </button>
+                                        
+                                        {/* Simple pagination: showing current, prev, next or just numbers if few. 
+                                            For large total_pages, we might want a better logic. 
+                                            For now, let's show a window around current page or all if small. 
+                                        */}
+                                        {(() => {
+                                            const maxVisiblePages = 5;
+                                            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                                            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+                                            if (endPage - startPage + 1 < maxVisiblePages) {
+                                                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                                            }
+
+                                            return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map(page => (
+                                                <button 
+                                                    key={page}
+                                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${page === currentPage ? 'bg-brand-600 hover:bg-brand-700' : 'bg-white/5 hover:bg-white/10'}`}
+                                                    onClick={() => handlePageChange(page)}
+                                                >
+                                                    {page}
+                                                </button>
+                                            ));
+                                        })()}
+
+                                        <button 
+                                            className={`px-4 py-2 rounded-lg bg-white/5 text-sm font-medium transition-colors ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10 cursor-pointer'}`}
+                                            onClick={() => handlePageChange(currentPage + 1)}
+                                            disabled={currentPage === totalPages}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+
+                                    {/* Records Per Page */}
+                                    <div className="flex items-center gap-2 bg-white/5 rounded-lg px-3 py-1 border border-white/5 hover:bg-white/10 transition-colors">
+                                        <span className="text-xs text-gray-400">Show:</span>
+                                        <select 
+                                            value={itemsPerPage} 
+                                            onChange={handleLimitChange}
+                                            className="bg-transparent text-sm text-white focus:outline-none cursor-pointer py-1 [&>option]:bg-gray-900"
+                                            aria-label="Records per page"
+                                        >
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            )}
+                        </>
+                    )}
+                    
+                    <div className="h-10"></div> {/* Spacer */}
+
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+  );
+};
+
+export default SearchPage;
