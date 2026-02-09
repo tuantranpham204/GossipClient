@@ -62,7 +62,6 @@ export const useSignInMutation = () => {
       const accessToken = response.data.token;
 
       setAuth(user, accessToken);
-      toast.success(`Welcome back, ${response.data.user.username || "User"}!`);
     },
     onError: (error) => {
       console.error("Sign in failed:", error);
@@ -81,7 +80,6 @@ export const useSignOutMutation = () => {
     mutationFn: signOut,
     onSuccess: () => {
       logout();
-      toast.success("Signed out successfully");
     },
     onError: (error) => {
       console.error("Sign out failed:", error);

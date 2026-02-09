@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
 import { 
   ArrowRight, 
   Instagram, 
@@ -8,10 +9,18 @@ import {
 } from 'lucide-react';
 import logo from '../assets/logo.png';
 
+import LanguageSwitcher from '../components/LanguageSwitcher';
+
 const LandingPage: React.FC = () => {
+  const { t } = useTranslation();
 
   return (
     <div className="bg-black min-h-screen flex items-center justify-center relative selection:bg-brand-500 selection:text-white overflow-hidden">
+        
+      {/* Language Switcher - Absolute Positioned */}
+      <div className="absolute top-6 right-6 z-50">
+        <LanguageSwitcher />
+      </div>
 
       {/* Background Liquid Blobs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -38,7 +47,7 @@ const LandingPage: React.FC = () => {
           <div className="space-y-4">
             <h1 className="text-5xl font-bold tracking-tight text-white mb-2">Gossip</h1>
             <p className="text-lg text-gray-300 font-light tracking-wide">
-              Where conversations <span className="italic text-brand-400">flow</span> like liquid.
+              <Trans i18nKey="landing.hero_subtitle" components={{ italic: <span className="italic text-brand-400" /> }} />
             </p>
             <div className="h-px w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto"></div>
           </div>
@@ -48,7 +57,7 @@ const LandingPage: React.FC = () => {
             <Link to="/auth" className="group w-full relative flex justify-center py-3.5 px-4 border border-transparent rounded-2xl text-sm font-medium text-white bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 ring-offset-black transition-all duration-300 backdrop-blur-md overflow-hidden">
               <div className="absolute inset-0 w-0 bg-gradient-to-r from-brand-500/20 to-purple-500/20 transition-all duration-[250ms] ease-out group-hover:w-full opacity-0 group-hover:opacity-100"></div>
               <span className="relative flex items-center">
-                Enter Gossip <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                {t('landing.enter_button')} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </span>
             </Link>
             
@@ -66,7 +75,7 @@ const LandingPage: React.FC = () => {
           </div>
           
           <div className="mt-8 text-xs text-gray-500 font-light">
-            © 2026 Gossip Platform. All rights reserved.
+            {t('common.footer_rights')}
           </div>
 
         </div>

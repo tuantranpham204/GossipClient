@@ -1,10 +1,15 @@
 {
+    "toast": {
+        "welcome_back": "Welcome back, "
+    },
     "common": {
         "loading": "Loading...",
         "error": "Error",
         "success": "Success",
         "warning": "Warning",
-        "info": "Info"
+        "info": "Info",
+        "footer_rights": "© 2026 Gossip Platform. All rights reserved.",
+        "footer_terms": "© 2026 Gossip Platform. Terms & Privacy."
     },
     "api": {
       "network_error": "Network Error: Please check your connection.",
@@ -23,6 +28,58 @@
         "activation_invalid_desc": "The activation token is invalid or has expired. Please try signing up again or contact support.",
         "activation_already_title": "Already Activated",
         "activation_already_desc": "Your account is already activated. Please sign in.",
-        "back_to_signin": "Back to Sign In"
+        "back_to_signin": "Back to Sign In",
+        "welcome_back": "Welcome Back",
+        "create_account": "Create Account",
+        "signin_subtitle": "Enter your details to access your account.",
+        "signup_subtitle": "Join us and start gossiping!",
+        "tab_signin": "Sign In",
+        "tab_signup": "Sign Up",
+        "label_email": "Email Address",
+        "placeholder_email": "name@example.com",
+        "label_password": "Password",
+        "placeholder_password": "••••••••",
+        "forgot_password": "Forgot password?",
+        "btn_signin": "Sign In",
+        "label_name": "Name",
+        "placeholder_name": "Gossip",
+        "label_surname": "Surname",
+        "placeholder_surname": "Queen",
+        "label_username": "Username",
+        "placeholder_username": "gossipqueen",
+        "label_gender": "Gender",
+        "gender_male": "Male",
+        "gender_female": "Female",
+        "label_dob": "Date of Birth",
+        "placeholder_dob": "YYYY-MM-DD",
+        "label_confirm_password": "Confirm",
+        "btn_creating": "Creating Account...",
+        "btn_signup": "Sign Up",
+        "or_continue": "Or continue with",
+        "btn_google": "Continue with Google",
+        "hero_title": "Connect instantly.",
+        "hero_subtitle": "Join millions of people sharing their stories on Gossip. Experience a new way of communication.",
+        "validation_email_required": "Email is required",
+        "validation_password_required": "Password is required",
+        "validation_name_required": "Name is required",
+        "validation_surname_required": "Surname is required",
+        "validation_username_required": "Username is required",
+        "validation_passwords_match": "Passwords do not match"
+    },
+    "sidebar": {
+        "search": "Search",
+        "messages": "Messages",
+        "posts": "Posts",
+        "friends": "Friends",
+        "follows": "Follows",
+        "requests": "Requests",
+        "notifications": "Notifications",
+        "profile": "Profile",
+        "settings": "Settings",
+        "sign_out": "Sign Out"
+    },
+    "landing": {
+        "hero_subtitle": "Where conversations <italic>flow</italic> like liquid.",
+        "enter_button": "Enter Gossip"
     }
 }

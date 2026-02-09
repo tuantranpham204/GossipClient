@@ -1,10 +1,15 @@
 {
+    "toast": {
+        "welcome_back": "Chào mừng trở lại, "
+    },
     "common": {
         "loading": "Đang tải...",
         "error": "Lỗi",
         "success": "Thành công",
         "warning": "Cảnh báo",
-        "info": "Thông tin"
+        "info": "Thông tin",
+        "footer_rights": "© 2026 Nền tảng Gossip. Đã đăng ký bản quyền.",
+        "footer_terms": "© 2026 Nền tảng Gossip. Điều khoản & Quyền riêng tư."
     },
     "api": {
       "network_error": "Lỗi mạng: Vui lòng kiểm tra kết nối của bạn.",
@@ -23,6 +28,58 @@
         "activation_invalid_desc": "Mã kích hoạt không hợp lệ hoặc đã hết hạn. Vui lòng thử đăng ký lại hoặc liên hệ hỗ trợ.",
         "activation_already_title": "Đã kích hoạt",
         "activation_already_desc": "Tài khoản của bạn đã được kích hoạt trước đó. Vui lòng đăng nhập.",
-        "back_to_signin": "Quay lại Đăng nhập"
+        "back_to_signin": "Quay lại Đăng nhập",
+        "welcome_back": "Chào mừng trở lại",
+        "create_account": "Tạo tài khoản",
+        "signin_subtitle": "Nhập thông tin chi tiết để truy cập tài khoản của bạn.",
+        "signup_subtitle": "Tham gia cùng chúng tôi và bắt đầu trò chuyện!",
+        "tab_signin": "Đăng nhập",
+        "tab_signup": "Đăng ký",
+        "label_email": "Địa chỉ Email",
+        "placeholder_email": "ten@vidu.com",
+        "label_password": "Mật khẩu",
+        "placeholder_password": "••••••••",
+        "forgot_password": "Quên mật khẩu?",
+        "btn_signin": "Đăng nhập",
+        "label_name": "Tên",
+        "placeholder_name": "Rắn",
+        "label_surname": "Họ",
+        "placeholder_surname": "Độc",
+        "label_username": "Tên đăng nhập",
+        "placeholder_username": "randocvietnam",
+        "label_gender": "Giới tính",
+        "gender_male": "Nam",
+        "gender_female": "Nữ",
+        "label_dob": "Ngày sinh",
+        "placeholder_dob": "NN-TT-NNNN",
+        "label_confirm_password": "Xác nhận",
+        "btn_creating": "Đang tạo tài khoản...",
+        "btn_signup": "Đăng ký",
+        "or_continue": "Hoặc tiếp tục với",
+        "btn_google": "Tiếp tục với Google",
+        "hero_title": "Kết nối tức thì.",
+        "hero_subtitle": "Tham gia cùng hàng triệu người chia sẻ câu chuyện của họ trên Gossip. Trải nghiệm một cách giao tiếp mới.",
+        "validation_email_required": "Email là bắt buộc",
+        "validation_password_required": "Mật khẩu là bắt buộc",
+        "validation_name_required": "Tên là bắt buộc",
+        "validation_surname_required": "Họ là bắt buộc",
+        "validation_username_required": "Tên đăng nhập là bắt buộc",
+        "validation_passwords_match": "Mật khẩu không khớp"
+    },
+    "sidebar": {
+        "search": "Tìm kiếm",
+        "messages": "Tin nhắn",
+        "posts": "Bài viết",
+        "friends": "Bạn bè",
+        "follows": "Đang theo dõi",
+        "requests": "Yêu cầu",
+        "notifications": "Thông báo",
+        "profile": "Hồ sơ",
+        "settings": "Cài đặt",
+        "sign_out": "Đăng xuất"
+    },
+    "landing": {
+        "hero_subtitle": "Nơi những cuộc trò chuyện <italic>tuôn chảy</italic> như dòng nước.",
+        "enter_button": "Bắt đầu trò chuyện :>"
     }
 }

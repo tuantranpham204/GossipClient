@@ -15,8 +15,11 @@ import {
 } from 'lucide-react';
 import logo from '../assets/logo.png';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 const NavigationSidebar: React.FC = () => {
+    const { t } = useTranslation();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,49 +53,49 @@ const NavigationSidebar: React.FC = () => {
         {/* Search */}
         <Link to="/search" className="relative group flex items-center justify-center p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all">
           <Search className="w-6 h-6" />
-          <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Search</span>
+          <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">{t('sidebar.search')}</span>
         </Link>
 
         {/* Messages */}
         <Link to="/home" className={`relative group flex items-center justify-center p-3 rounded-xl transition-all ${isActive('/home') || isActive('/messages') ? 'bg-brand-600 text-white shadow-lg shadow-indigo-500/30' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}>
           <MessageCircle className="w-6 h-6" />
           <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-black">4</div>
-          <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Messages</span>
+          <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">{t('sidebar.messages')}</span>
         </Link>
 
         {/* Posts */}
         <button className="relative group flex items-center justify-center p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all">
           <LayoutGrid className="w-6 h-6" />
           <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-black">9</div>
-          <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Posts</span>
+          <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">{t('sidebar.posts')}</span>
         </button>
 
         {/* Friends */}
         <Link to="/friends" className="relative group flex items-center justify-center p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all">
           <Users className="w-6 h-6" />
           <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-black">2</div>
-          <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Friends</span>
+          <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">{t('sidebar.friends')}</span>
         </Link>
 
         {/* Follows */}
         <Link to="/follows" className="relative group flex items-center justify-center p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all">
           <UserCheck className="w-6 h-6" />
           <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-black">5</div>
-           <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Follows</span>
+           <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">{t('sidebar.follows')}</span>
         </Link>
 
         {/* Requests */}
         <button className="relative group flex items-center justify-center p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all">
           <UserPlus className="w-6 h-6" />
           <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-black">1</div>
-           <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Requests</span>
+           <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">{t('sidebar.requests')}</span>
         </button>
 
         {/* Notifications */}
         <button onClick={toggleNotifications} className="relative group flex items-center justify-center p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all">
           <Bell className="w-6 h-6" />
           <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-black">12</div>
-           <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Notifications</span>
+           <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">{t('sidebar.notifications')}</span>
         </button>
 
       </div>
@@ -111,11 +114,15 @@ const NavigationSidebar: React.FC = () => {
             <p className="text-xs text-gray-500">@username</p>
           </div>
           <Link to="/profile" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors">
-            <User className="w-4 h-4" /> Profile
+            <User className="w-4 h-4" /> {t('sidebar.profile')}
           </Link>
            <a href="#" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors">
-            <Settings className="w-4 h-4" /> Settings
+            <Settings className="w-4 h-4" /> {t('sidebar.settings')}
           </a>
+          <div className="h-px bg-white/5 my-1"></div>
+          <div className="px-3 py-2">
+            <LanguageSwitcher className="w-full justify-start" />
+          </div>
           <div className="h-px bg-white/5 my-1"></div>
           <button 
             onClick={() => {
@@ -127,7 +134,7 @@ const NavigationSidebar: React.FC = () => {
             }}
             className="flex w-full items-center gap-3 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-xl transition-colors cursor-pointer"
           >
-            <LogOut className="w-4 h-4" /> Sign Out
+            <LogOut className="w-4 h-4" /> {t('sidebar.sign_out')}
           </button>
         </div>
       </div>

@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { DayPicker } from 'react-day-picker';
 import { format } from 'date-fns';
 import 'react-day-picker/style.css';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 // Custom styles for React Day Picker in dark mode
 const datePickerStyles = `
@@ -93,8 +94,10 @@ export default function AuthPage() {
 
   const onSignInSubmit = (data: SignInFormValues) => {
     signIn(data, {
-      onSuccess: () => {
-        // The toast is already handled in the mutation
+      onSuccess: (data: any) => {
+        toast.success(
+            data.message || t("toast.welcome_back")
+        );
         navigate('/messages');
       }
     });
@@ -213,10 +216,10 @@ export default function AuthPage() {
                     <>
                         <div className="mb-2 text-center">
                             <h2 className="text-2xl font-bold text-white mb-1">
-                                {isSignIn ? 'Welcome Back' : 'Create Account'}
+                                {isSignIn ? t('auth.welcome_back') : t('auth.create_account')}
                             </h2>
                             <p className="text-sm text-gray-400">
-                                {isSignIn ? 'Enter your details to access your account.' : 'Join us and start gossiping!'}
+                                {isSignIn ? t('auth.signin_subtitle') : t('auth.signup_subtitle')}
                             </p>
                         </div>
                         {/* Toggle */}
@@ -231,13 +234,13 @@ export default function AuthPage() {
                                 }}
                                 className={`flex-1 py-2 text-sm font-medium relative z-10 transition-colors ${isSignIn ? 'text-white' : 'text-gray-400 hover:text-white'}`}
                             >
-                                Sign In
+                                {t('auth.tab_signin')}
                             </button>
                             <button 
                                 onClick={() => setIsSignIn(false)}
                                 className={`flex-1 py-2 text-sm font-medium relative z-10 transition-colors ${!isSignIn ? 'text-white' : 'text-gray-400 hover:text-white'}`}
                             >
-                                Sign Up
+                                {t('auth.tab_signup')}
                             </button>
                         </div>
 
@@ -246,61 +249,61 @@ export default function AuthPage() {
                             <form onSubmit={signInForm.handleSubmit(onSignInSubmit)} className="space-y-4">
                                 <div>
                                     <div className="flex justify-between items-center mb-1.5">
-                                        <label className="block text-xs font-medium text-gray-300">Email Address</label>
-                                        {signInForm.formState.errors.email && <span className="text-red-400 text-[10px]">{signInForm.formState.errors.email.message}</span>}
+                                        <label className="block text-xs font-medium text-gray-300">{t('auth.label_email')}</label>
+                                        {signInForm.formState.errors.email && <span className="text-red-400 text-[10px]">{t('auth.validation_email_required')}</span>}
                                     </div>
                                     <div className="relative group">
                                         <div className="absolute -inset-0.5 bg-linear-to-r from-indigo-500 to-purple-500 rounded-lg blur opacity-0 group-hover:opacity-30 transition duration-500"></div>
                                         <input 
-                                            {...signInForm.register("email", { required: "Email is required" })}
+                                            {...signInForm.register("email", { required: t('auth.validation_email_required') })}
                                             type="email" 
                                             className="relative w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-transparent transition-all" 
-                                            placeholder="name@example.com"
+                                            placeholder={t('auth.placeholder_email')}
                                         />
                                     </div>
                                 </div>
 
                                 <div>
                                     <div className="flex justify-between items-center mb-1.5">
-                                        <label className="block text-xs font-medium text-gray-300">Password</label>
+                                        <label className="block text-xs font-medium text-gray-300">{t('auth.label_password')}</label>
                                         {signInForm.formState.errors.password ? (
                                             <span className="text-red-400 text-[10px]">{signInForm.formState.errors.password.message}</span>
                                         ) : (
-                                            <a href="#" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">Forgot password?</a>
+                                            <a href="#" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">{t('auth.forgot_password')}</a>
                                         )}
                                     </div>
                                     <div className="relative group">
                                         <div className="absolute -inset-0.5 bg-linear-to-r from-indigo-500 to-purple-500 rounded-lg blur opacity-0 group-hover:opacity-30 transition duration-500"></div>
                                         <input 
-                                            {...signInForm.register("password", { required: "Password is required" })}
+                                            {...signInForm.register("password", { required: t('auth.validation_password_required') })}
                                             type="password" 
                                             className="relative w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-transparent transition-all" 
-                                            placeholder="••••••••"
+                                            placeholder={t('auth.placeholder_password')}
                                         />
                                     </div>
                                 </div>
 
                                 <button type="submit" className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transform hover:-translate-y-0.5 text-sm cursor-pointer">
-                                    Sign In
+                                    {t('auth.btn_signin')}
                                 </button>
-                            </form>
+                        </form>
                         ) : (
                             // --- SIGN UP FORM ---
                             <form onSubmit={signUpForm.handleSubmit(onSignUpSubmit)} className="space-y-2">
                                 <div className="grid grid-cols-2 gap-2">
                                     <div>
                                         <div className="flex justify-between items-center mb-1">
-                                            <label className="block text-xs font-medium text-gray-300">Name</label>
-                                            {signUpForm.formState.errors.name && <span className="text-red-400 text-[10px]">{signUpForm.formState.errors.name.message}</span>}
+                                            <label className="block text-xs font-medium text-gray-300">{t('auth.label_name')}</label>
+                                            {signUpForm.formState.errors.name && <span className="text-red-400 text-[10px]">{t('auth.validation_name_required')}</span>}
                                         </div>
-                                        <input {...signUpForm.register("name", { required: "Name is required" })} className="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder="John" />
+                                        <input {...signUpForm.register("name", { required: t('auth.validation_name_required') })} className="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder={t('auth.placeholder_name')} />
                                     </div>
                                     <div>
                                         <div className="flex justify-between items-center mb-1">
-                                            <label className="block text-xs font-medium text-gray-300">Surname</label>
-                                            {signUpForm.formState.errors.surname && <span className="text-red-400 text-[10px]">{signUpForm.formState.errors.surname.message}</span>}
+                                            <label className="block text-xs font-medium text-gray-300">{t('auth.label_surname')}</label>
+                                            {signUpForm.formState.errors.surname && <span className="text-red-400 text-[10px]">{t('auth.validation_surname_required')}</span>}
                                         </div>
-                                        <input {...signUpForm.register("surname", { required: "Surname is required" })} className="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder="Doe" />
+                                        <input {...signUpForm.register("surname", { required: t('auth.validation_surname_required') })} className="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder={t('auth.placeholder_surname')} />
                                     </div>
                                 </div>
 
@@ -311,7 +314,7 @@ export default function AuthPage() {
                                     </div>
                                     <div className="relative">
                                         <User size={14} className="absolute left-3 top-3 text-gray-500" />
-                                        <input {...signUpForm.register("username", { required: "Username is required" })} className="w-full bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder="johndoe" />
+                                        <input {...signUpForm.register("username", { required: "Username is required" })} className="w-full bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder={t("auth.placeholder_username")} />
                                     </div>
                                 </div>
 
@@ -322,21 +325,21 @@ export default function AuthPage() {
                                     </div>
                                     <div className="relative">
                                         <Mail size={14} className="absolute left-3 top-3 text-gray-500" />
-                                        <input {...signUpForm.register("email", { required: "Email is required" })} type="email" className="w-full bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder="john@example.com" />
+                                        <input {...signUpForm.register("email", { required: "Email is required" })} type="email" className="w-full bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder={t("auth.placeholder_email")} />
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label className="block text-xs font-medium text-gray-300 mb-1">Gender</label>
+                                        <label className="block text-xs font-medium text-gray-300 mb-1">{t('auth.label_gender')}</label>
                                         <select {...signUpForm.register("gender")} className="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none">
-                                            <option value={GENDER.MALE}>Male</option>
-                                            <option value={GENDER.FEMALE}>Female</option>
+                                            <option value={GENDER.MALE}>{t('auth.gender_male')}</option>
+                                            <option value={GENDER.FEMALE}>{t('auth.gender_female')}</option>
                                         </select>
                                     </div>
-                                    <div className="relative" ref={datePickerRef}>
+                                    <div className="relative" ref={datePickerRef}   >
                                         <div className="flex justify-between items-center mb-1">
-                                            <label className="block text-xs font-medium text-gray-300">Date of Birth</label>
+                                            <label className="block text-xs font-medium text-gray-300">{t('auth.label_dob')}</label>
                                             {signUpForm.formState.errors.dob && <span className="text-red-400 text-[10px]">Required</span>}
                                         </div>
                                         <Controller
@@ -354,7 +357,7 @@ export default function AuthPage() {
                                                             readOnly
                                                             value={field.value ? format(field.value as Date, 'yyyy-MM-dd') : ''}
                                                             className="w-full bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none cursor-pointer"
-                                                            placeholder="YYYY-MM-DD"
+                                                            placeholder={t('auth.placeholder_dob')}
                                                         />
                                                     </div>
                                                     {showDatePicker && (
@@ -391,22 +394,22 @@ export default function AuthPage() {
                                 <div className="grid grid-cols-2 gap-2">
                                     <div>
                                         <div className="flex justify-between items-center mb-1">
-                                            <label className="block text-xs font-medium text-gray-300">Password</label>
+                                            <label className="block text-xs font-medium text-gray-300">{t('auth.label_password')}</label>
                                             {signUpForm.formState.errors.password && <span className="text-red-400 text-[10px]">Required</span>}
                                         </div>
                                         <div className="relative">
                                             <Lock size={14} className="absolute left-3 top-3 text-gray-500" />
-                                            <input {...signUpForm.register("password", { required: "Password is required" })} type="password" className="w-full bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder="••••••" />
+                                            <input {...signUpForm.register("password", { required: t('auth.validation_password_required') })} type="password" className="w-full bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder={t('auth.placeholder_password')} />
                                         </div>
                                     </div>
                                     <div>
                                         <div className="flex justify-between items-center mb-1">
-                                            <label className="block text-xs font-medium text-gray-300">Confirm</label>
+                                            <label className="block text-xs font-medium text-gray-300">{t('auth.label_confirm_password')}</label>
                                             {signUpForm.formState.errors.confirmPassword && <span className="text-red-400 text-[10px]">Required</span>}
                                         </div>
                                         <div className="relative">
                                             <Lock size={14} className="absolute left-3 top-3 text-gray-500" />
-                                            <input {...signUpForm.register("confirmPassword", { required: "Confirm Password is required" })} type="password" className="w-full bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder="••••••" />
+                                            <input {...signUpForm.register("confirmPassword", { required: "Confirm Password is required" })} type="password" className="w-full bg-black/50 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm text-white focus:ring-2 focus:ring-indigo-500/50 outline-none" placeholder={t('auth.placeholder_password')} />
                                         </div>
                                     </div>
                                 </div>
@@ -426,14 +429,14 @@ export default function AuthPage() {
                                 <div className="w-full border-t border-white/10"></div>
                             </div>
                             <div className="relative flex justify-center text-xs">
-                                <span className="px-2 bg-black text-gray-500">Or continue with</span>
+                                <span className="px-2 bg-black text-gray-500">{t('auth.or_continue')}</span>
                             </div>
                         </div>
 
                         <div className="mt-3 flex justify-center">
                             <button className="flex items-center justify-center gap-3 w-full py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all cursor-pointer group">
                                 <Chrome className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
-                                <span className="text-sm font-medium text-gray-300 group-hover:text-white">Continue with Google</span>
+                                <span className="text-sm font-medium text-gray-300 group-hover:text-white">{t('auth.btn_google')}</span>
                             </button>
                         </div>
                     </>
@@ -442,12 +445,17 @@ export default function AuthPage() {
             </div>
             
             <div className="mt-4 lg:absolute lg:bottom-4 lg:left-0 w-full text-center text-xs text-gray-600">
-                &copy; 2026 Gossip Platform. Terms & Privacy.
+                {t('common.footer_terms')}
             </div>
         </div>
 
         {/* Right Side: Image Area */}
         <div className="hidden lg:block w-1/2 relative bg-gray-900 overflow-hidden">
+             
+             {/* Language Switcher */}
+             <div className="absolute top-6 right-6 z-30">
+                <LanguageSwitcher className="bg-black/40 backdrop-blur-md border-white/20 hover:bg-black/60 text-white" />
+             </div>
             <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent z-10 opacity-80"></div>
             {/* Using a placeholder image or the one from the template if available */}
              <div 
@@ -459,9 +467,9 @@ export default function AuthPage() {
                 <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center mb-6 border border-white/20">
                     <Sparkles className="w-6 h-6 text-yellow-300" />
                 </div>
-                <h3 className="text-3xl font-bold text-white mb-3">Connect instantly.</h3>
+                <h3 className="text-3xl font-bold text-white mb-3">{t('auth.hero_title')}</h3>
                 <p className="text-gray-300 font-light leading-relaxed">
-                    Join millions of people sharing their stories on Gossip. Experience a new way of communication.
+                    {t('auth.hero_subtitle')}
                 </p>
             </div>
         </div>
