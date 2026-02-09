@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "../store/useAuthStore";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import i18next from "../i18n/config";
 
 const t = (key) => i18next.t(key);

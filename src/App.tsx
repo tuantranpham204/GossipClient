@@ -3,14 +3,11 @@ import LandingPage from './pages/LandingPage'
 import HomePage from './pages/HomePage'
 import AuthPage from './pages/AuthPage'
 import './App.css'
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { Toaster } from 'sonner';
 
 function App() {
   return (
     <BrowserRouter>
-      <ToastContainer />
       <Toaster position="top-center" richColors />
       <Routes>
         <Route path="/" element={<LandingPage />} />
