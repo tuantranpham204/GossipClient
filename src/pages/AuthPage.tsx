@@ -125,9 +125,6 @@ export default function AuthPage() {
     signUp(formattedData, {
       onSuccess: (data: any) => {
         setIsSignUpSuccess(true);
-        if (data?.message) {
-            toast.success(data.message);
-        }
       }
     });
   };

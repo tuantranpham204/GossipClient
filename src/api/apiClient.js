@@ -66,7 +66,7 @@ export const handleApiResponse = async (
       throw new Error(t("api.general_error"));
     }
 
-    if (responseData.code == 200) {
+    if (200 <= responseData.code && responseData.code < 300) {
       if (responseData.message && options.showToast) {
         toast.success(responseData.message);
       }
@@ -82,8 +82,9 @@ export const handleApiResponse = async (
           message: responseData.message || t("api.success"),
         };
       }
-    } else if (responseData.code || responseData.message) {
+    } else if (responseData.status || responseData.message) {
       toast.warning(responseData.message);
+      throw new Error(responseData.message || t("api.general_error"));
     } else {
       throw new Error(responseData.message || t("api.general_error"));
     }
