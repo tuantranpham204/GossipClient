@@ -64,6 +64,7 @@ export const useSignInMutation = () => {
       setAuth(user, accessToken);
     },
     onError: (error) => {
+      useAuthStore.getState().logout();
       console.error("Sign in failed:", error);
     },
   });
@@ -83,11 +84,6 @@ export const useSignOutMutation = () => {
     },
     onError: (error) => {
       console.error("Sign out failed:", error);
-      // Optional: Force logout even if API fails?
-      // logout();
-      // For now, let's keep it clean and only logout on success or if we decide to force it.
-      // But usually if the token is invalid, we might want to clear it locally.
-      // Let's assume strict success for now, or we can fallback.
       logout(); // Fallback: clear local state anyway to prevent stuck state
     },
   });

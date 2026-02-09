@@ -82,17 +82,21 @@ export const handleApiResponse = async (
           message: responseData.message || t("api.success"),
         };
       }
+    } else if (responseData.code || responseData.message) {
+      toast.warning(responseData.message);
+    } else {
+      throw new Error(responseData.message || t("api.general_error"));
     }
   } catch (error) {
     if (error.response) {
       const responseData = error.response.data;
-      if (error.status == 401) {
-        toast.warning(responseData.message);
+      if (error.response.status === 401) {
+        toast.warning(responseData.message || t("api.unauthorized"));
         useAuthStore.getState().logout();
-        return {
-          message: responseData.message || t("api.unauthorized"),
-        };
+        throw new Error(responseData.message || t("api.unauthorized"));
       }
+      // For other errors, rethrow or handle specific cases
+      throw new Error(responseData.message || error.message);
     }
 
     if (error.request) {
