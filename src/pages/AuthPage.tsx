@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { useSignUpMutation } from '../services/auth.service';
+import { useSignUpMutation, useSignInMutation } from '../services/auth.service';
 import { Chrome, Sparkles, Mail, Lock, User, CheckCircle, XCircle, AlertCircle, Calendar as CalendarIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { GENDER } from '../utils/enum';
 import backgroundGif from '../assets/background.gif';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DayPicker } from 'react-day-picker';
 import { format } from 'date-fns';
@@ -58,7 +58,9 @@ interface SignUpFormValues {
 export default function AuthPage() {
   const [isSignIn, setIsSignIn] = useState(true);
   const { mutate: signUp, isPending: isSignUpPending } = useSignUpMutation();
+  const { mutate: signIn, isPending: isSignInPending } = useSignInMutation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const activationStatus = searchParams.get('activation_status');
   const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
@@ -90,8 +92,12 @@ export default function AuthPage() {
   // --- Handlers ---
 
   const onSignInSubmit = (data: SignInFormValues) => {
-    console.log("Sign In Data:", data);
-    toast.info("Sign In API not implemented yet.");
+    signIn(data, {
+      onSuccess: () => {
+        // The toast is already handled in the mutation
+        navigate('/messages');
+      }
+    });
   };
 
   const onSignUpSubmit = (data: SignUpFormValues) => {
@@ -219,7 +225,10 @@ export default function AuthPage() {
                                 className={`w-1/2 h-full absolute left-0 top-0 bg-white/10 rounded-xl transition-all duration-300 ${isSignIn ? 'translate-x-0' : 'translate-x-full'}`}
                             ></div>
                             <button 
-                                onClick={() => setIsSignIn(true)}
+                                onClick={() => {
+                                    setIsSignIn(true);
+                                    signInForm.reset();
+                                }}
                                 className={`flex-1 py-2 text-sm font-medium relative z-10 transition-colors ${isSignIn ? 'text-white' : 'text-gray-400 hover:text-white'}`}
                             >
                                 Sign In
