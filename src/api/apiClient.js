@@ -54,11 +54,11 @@ export const handleApiResponse = async (request) => {
     const responseData = response.data;
     if (!responseData) {
       toast.error(t("api.network_error"));
-      return;
+      throw new Error(t("api.network_error"));
     }
     if (!responseData.code || !responseData.data) {
       toast.error(t("api.general_error"));
-      return;
+      throw new Error(t("api.general_error"));
     }
 
     if (responseData.code == 200) {
@@ -78,31 +78,21 @@ export const handleApiResponse = async (request) => {
         };
       }
     }
-
-    if (responseData.code == 422) {
-      toast.warning(responseData.message);
-      return {
-        message: responseData.message || t("api.unprocessable_entity"),
-      };
-    }
-
-    if (responseData.code == 500) {
-      toast.error(responseData.message);
-      return {
-        message: responseData.message || t("api.internal_server_error"),
-      };
-    }
-
-    if (responseData.code == 401) {
-      toast.error(responseData.message);
-      return {
-        message: responseData.message || t("api.unauthorized"),
-      };
-    }
   } catch (error) {
+    if (error.response) {
+      const responseData = error.response.data;
+      if (error.status == 401) {
+        toast.warning(responseData.message);
+        useAuthStore.getState().logout();
+        return {
+          message: responseData.message || t("api.unauthorized"),
+        };
+      }
+    }
+
     if (error.request) {
-      toast.error(t("api.network_error"));
-      console.error(t("api.network_error"), error);
+      toast.error(`${t("api.network_error")}: ${error.message}`);
+      console.error(`${t("api.network_error")}: ${error.message}`);
     } else {
       console.error(error?.message);
     }
