@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAuthStore } from "../store/useAuthStore";
 import apiClient, { handleApiResponse } from "../api/apiClient";
+import { toast } from "sonner";
 import { ROLES } from "../utils/enum";
 
 const signUp = async (userData) => {
@@ -28,6 +29,7 @@ const signIn = async (userData) => {
         password: userData.password,
       },
     }),
+    { showToast: false },
   );
 };
 
@@ -64,6 +66,31 @@ export const useSignInMutation = () => {
     },
     onError: (error) => {
       console.error("Sign in failed:", error);
+    },
+  });
+};
+
+const signOut = async () => {
+  return handleApiResponse(apiClient.delete("/users/sign_out"));
+};
+
+export const useSignOutMutation = () => {
+  const logout = useAuthStore((state) => state.logout);
+
+  return useMutation({
+    mutationFn: signOut,
+    onSuccess: () => {
+      logout();
+      toast.success("Signed out successfully");
+    },
+    onError: (error) => {
+      console.error("Sign out failed:", error);
+      // Optional: Force logout even if API fails?
+      // logout();
+      // For now, let's keep it clean and only logout on success or if we decide to force it.
+      // But usually if the token is invalid, we might want to clear it locally.
+      // Let's assume strict success for now, or we can fallback.
+      logout(); // Fallback: clear local state anyway to prevent stuck state
     },
   });
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useSignOutMutation } from '../services/auth.service';
 import { 
   Search, 
   MessageCircle, 
@@ -18,6 +19,8 @@ import defaultAvatar from '../assets/defaultAvatar.jpg';
 const NavigationSidebar: React.FC = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { mutate: signOut } = useSignOutMutation();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -114,9 +117,18 @@ const NavigationSidebar: React.FC = () => {
             <Settings className="w-4 h-4" /> Settings
           </a>
           <div className="h-px bg-white/5 my-1"></div>
-          <Link to="/" className="flex items-center gap-3 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-xl transition-colors">
+          <button 
+            onClick={() => {
+              signOut(undefined, {
+                onSuccess: () => {
+                  navigate('/');
+                }
+              });
+            }}
+            className="flex w-full items-center gap-3 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-xl transition-colors cursor-pointer"
+          >
             <LogOut className="w-4 h-4" /> Sign Out
-          </Link>
+          </button>
         </div>
       </div>
 

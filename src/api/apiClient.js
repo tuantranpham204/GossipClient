@@ -48,7 +48,10 @@ apiClient.interceptors.response.use(
   },
 );
 
-export const handleApiResponse = async (request) => {
+export const handleApiResponse = async (
+  request,
+  options = { showToast: true },
+) => {
   try {
     const response = await request;
     const responseData = response.data;
@@ -62,7 +65,7 @@ export const handleApiResponse = async (request) => {
     }
 
     if (responseData.code == 200) {
-      if (responseData.message) {
+      if (responseData.message && options.showToast) {
         toast.success(responseData.message);
       }
       if (responseData.meta) {
