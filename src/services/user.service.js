@@ -14,3 +14,18 @@ export const useSearchUsers = (params) => {
     placeholderData: keepPreviousData,
   });
 };
+
+export const getUserProfile = async (userId) => {
+  return handleApiResponse(apiClient.get(`/profiles/${userId}`), {
+    showToast: false,
+  });
+};
+
+export const useUserProfile = (userId, options = {}) => {
+  return useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => getUserProfile(userId),
+    enabled: !!userId,
+    ...options,
+  });
+};
