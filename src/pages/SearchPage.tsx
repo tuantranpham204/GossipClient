@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavigationSidebar from '../components/NavigationSidebar';
-import { Search, UserCheck, UserPlus, Rss, MessageSquare, Loader2 } from 'lucide-react';
+import { Search, UserCheck, UserPlus, CopyPlus, MessageSquare, Loader2, Eye } from 'lucide-react';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
 import backgroundGif from '../assets/background.gif';
 import { useSearchUsers } from '../services/user.service';
@@ -12,10 +13,14 @@ interface UserData {
   surname: string;
   avatar_data: { url: string } | null;
   status: string | null;
-  initials?: string; // Kept for fallback logic if needed, though API doesn't seem to return it
+  initials?: string;
+  friends_amount: number;
+  followers_amount: number;
+  following_amount: number;
 }
 
 const SearchPage: React.FC = () => {
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(20); // Default to 20 as per API response example
     const [searchQuery, setSearchQuery] = useState('');
@@ -105,8 +110,35 @@ const SearchPage: React.FC = () => {
                                             <img src={defaultAvatar} alt={user.username} className="w-20 h-20 rounded-full object-cover mb-4 ring-2 ring-transparent group-hover:ring-brand-500/50 transition-all" />
                                         )}
                                         <h3 className="text-lg font-bold text-white text-center">{user.name} {user.surname}</h3>
-                                        <p className="text-sm text-gray-400 mb-4 text-center">@{user.username}</p>
-                                        <div className="flex gap-4 w-full justify-center mt-2">
+                                        <p className="text-sm text-gray-400 mb-2 text-center">@{user.username}</p>
+                                        
+                                        {/* Stats */}
+                                        <div className="flex items-center gap-3 mb-4 text-xs text-gray-400">
+                                            <div className="flex flex-col items-center">
+                                                <span className="font-bold text-white">{user.friends_amount}</span>
+                                                <span>Friends</span>
+                                            </div>
+                                            <div className="h-4 w-px bg-white/10"></div>
+                                            <div className="flex flex-col items-center">
+                                                <span className="font-bold text-white">{user.followers_amount}</span>
+                                                <span>Followers</span>
+                                            </div>
+                                            <div className="h-4 w-px bg-white/10"></div>
+                                            <div className="flex flex-col items-center">
+                                                <span className="font-bold text-white">{user.following_amount}</span>
+                                                <span>Following</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-4 w-full justify-center mt-auto">
+                                            <button 
+                                                title="View Profile" 
+                                                onClick={() => navigate(`/profile/${user.user_id}`)}
+                                                className="p-2.5 bg-white/5 hover:bg-blue-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110"
+                                            >
+                                                <Eye className="w-5 h-5" />
+                                            </button>
+
                                             {/* Logic for friend status can be improved when API supports it. For now assuming default state or using status if available */}
                                             {user.status === 'Requested' ? (
                                                 <button title="Friend Request Sent" className="p-2.5 bg-brand-600 text-white rounded-xl transition-all hover:scale-110 relative group">
@@ -119,7 +151,7 @@ const SearchPage: React.FC = () => {
                                                 </button>
                                             )}
                                             <button title="Follow" className="p-2.5 bg-white/5 hover:bg-pink-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
-                                                <Rss className="w-5 h-5" />
+                                                <CopyPlus className="w-5 h-5" />
                                             </button>
                                             <button title="Message" className="p-2.5 bg-white/5 hover:bg-green-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
                                                 <MessageSquare className="w-5 h-5" />

@@ -52,7 +52,7 @@ export const useSignInMutation = () => {
         return;
       }
       const user = {
-        userId: response.data.user.user_id,
+        userId: response.data.user.id,
         username: response.data.user.username,
         role: response.data.user.roles?.[0] || ROLES.USER,
         name: response.data.user.name,
