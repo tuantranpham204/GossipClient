@@ -3,6 +3,9 @@ import NotificationCenter from './NotificationCenter';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSignOutMutation } from '../services/auth.service';
 import { useProfileImage } from '../services/user.service';
+import { useNotifications } from '../services/notification.service';
+// @ts-ignore
+import { NOTIFICATION_STATUS } from '../utils/enum';
 import { 
   Search, 
   MessageCircle, 
@@ -18,7 +21,8 @@ import {
 import logo from '../assets/logo.png';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
 import LanguageSwitcher from './LanguageSwitcher';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
+// @ts-ignore
 import { useAuthStore } from '../store/useAuthStore';
 
 const NavigationSidebar: React.FC = () => {
@@ -29,6 +33,10 @@ const NavigationSidebar: React.FC = () => {
   const { mutate: signOut } = useSignOutMutation();
   const user = useAuthStore((state: any) => state.user);
   const { data: avatarData } = useProfileImage('avatar', user?.userId);
+
+  // Fetch first page of notifications to determine unread badge
+  const { data: notifData } = useNotifications({ page: 1, per_page: 20 });
+  const unreadCount = notifData?.data?.filter((n: any) => n.status === NOTIFICATION_STATUS.UNREAD).length || 0;
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -98,7 +106,11 @@ const NavigationSidebar: React.FC = () => {
         {/* Notifications */}
         <button onClick={toggleNotifications} className="relative group flex items-center justify-center p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all">
           <Bell className="w-6 h-6" />
-          <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-black">12</div>
+          {unreadCount > 0 && (
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-black">
+                {unreadCount > 9 ? '9+' : unreadCount}
+            </div>
+          )}
            <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">{t('sidebar.notifications')}</span>
         </button>
 

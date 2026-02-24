@@ -86,7 +86,16 @@
         "time_ago_day": "{{count}} day ago",
         "time_ago_days": "{{count}} days ago",
         "empty": "No notifications yet",
-        "end_of_list": "You're all caught up!"
+        "end_of_list": "You're all caught up!",
+        "types": {
+            "unread_message": "sent you a message",
+            "private_message_strangers_request": "wants to send you a message",
+            "group_join_request": "wants to join your group",
+            "friend_request": "sent you a friend request",
+            "follow_request": "started following you",
+            "friend_request_accepted": "accepted your friend request",
+            "follow_request_accepted": "accepted your follow request"
+        }
     },
     "landing": {
         "hero_subtitle": "Where conversations <italic>flow</italic> like liquid.",

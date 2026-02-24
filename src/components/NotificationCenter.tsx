@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
 import { useNotifications, useReadAllNotifications } from '../services/notification.service';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
+// @ts-ignore
+import { NOTIFICATION_STATUS } from '../utils/enum';
 
 interface NotificationCenterProps {
     isOpen: boolean;
@@ -10,12 +12,13 @@ interface NotificationCenterProps {
 }
 
 interface NotificationItem {
+    id: number;
     user_id: number;
     actor_id: number;
     actor_username: string;
     actor_avatar_url: string | null;
-    status: number; // 0 = unread, 1 = read (assumption based on API schema)
-    notifiable_type: number;
+    status: string;
+    notification_type: string;
     content: Record<string, any>;
     updated_at: string;
     created_at: string;
@@ -46,10 +49,16 @@ const formatRelativeTime = (dateString: string, t: (key: string, opts?: any) => 
  * The API returns a `content` object — we display its `message` field if available,
  * or fall back to a JSON string representation.
  */
-const getNotificationMessage = (content: Record<string, any>): string => {
+const getNotificationMessage = (notification: NotificationItem, t: (key: string, opts?: any) => string): string => {
+    const { content, notification_type } = notification;
     if (content?.message) return content.message;
     if (content?.body) return content.body;
     if (content?.text) return content.text;
+    
+    if (notification_type) {
+        return t(`notifications.types.${notification_type}`);
+    }
+
     // Fallback: stringify non-empty content
     const str = JSON.stringify(content);
     return str !== '{}' ? str : 'New notification';
@@ -79,24 +88,26 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
     // Accumulated notifications across pages for seamless scrolling
     const [allNotifications, setAllNotifications] = useState<NotificationItem[]>([]);
 
-    // Reset accumulated list when panel opens
+    // Reset pagination when panel opens
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && currentPage !== 1) {
             setCurrentPage(1);
-            setAllNotifications([]);
         }
-    }, [isOpen]);
+    }, [isOpen, currentPage]);
 
-    // Append new page data
+    // Sync or Append new page data
     useEffect(() => {
         if (notifications.length > 0) {
-            setAllNotifications(prev => {
-                if (currentPage === 1) return notifications;
-                // Avoid duplicates
-                const existingIds = new Set(prev.map(n => `${n.actor_id}-${n.created_at}`));
-                const newItems = notifications.filter(n => !existingIds.has(`${n.actor_id}-${n.created_at}`));
-                return [...prev, ...newItems];
-            });
+            if (currentPage === 1) {
+                setAllNotifications(notifications);
+            } else {
+                setAllNotifications(prev => {
+                    // Avoid duplicates using the unique id
+                    const existingIds = new Set(prev.map(n => n.id));
+                    const newItems = notifications.filter(n => !existingIds.has(n.id));
+                    return [...prev, ...newItems];
+                });
+            }
         } else if (currentPage === 1) {
             setAllNotifications([]);
         }
@@ -138,7 +149,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
 
     if (!isOpen) return null;
 
-    const isUnread = (status: number) => status === 0;
+    const isUnread = (status: string) => status === NOTIFICATION_STATUS.UNREAD;
 
     return (
         <div className="fixed inset-0 z-50">
@@ -151,7 +162,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
             {/* Modal Content */}
             <div
                 ref={contentRef}
-                className={`absolute left-24 top-6 bottom-6 w-96 bg-black/80 glass-panel border border-white/10 rounded-2xl flex flex-col shadow-2xl transform transition-all duration-300 ${
+                className={`absolute left-24 top-6 bottom-6 w-96 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl flex flex-col shadow-[0_8px_32px_0_rgba(0,0,0,0.6)] transform transition-all duration-300 ${
                     isAnimating
                         ? 'translate-x-0 opacity-100'
                         : 'translate-x-[-20px] opacity-0'
@@ -206,10 +217,10 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
                         <>
                             {allNotifications.map((notification, index) =>
                                 isUnread(notification.status) ? (
-                                    /* Unread Item (Brighter) */
+                                    /* Unread Item (Brighter/Heavier) */
                                     <div
                                         key={`${notification.actor_id}-${notification.created_at}-${index}`}
-                                        className="p-4 rounded-xl bg-white/20 border border-white/10 hover:bg-white/25 transition-colors cursor-pointer relative group"
+                                        className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(255,255,255,0.1)] transition-all duration-300 cursor-pointer relative group shadow-[0_4px_12px_rgba(0,0,0,0.2)]"
                                     >
                                         {/* Unread dot */}
                                         <div className="absolute top-4 right-4 w-2 h-2 bg-brand-500 rounded-full" />
@@ -224,17 +235,17 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
                                             </p>
                                         </div>
                                         <p className="text-sm text-gray-100">
-                                            {getNotificationMessage(notification.content)}
+                                            {getNotificationMessage(notification, t)}
                                         </p>
                                         <span className="text-xs text-brand-300 mt-2 block font-medium">
                                             {formatRelativeTime(notification.created_at, t)}
                                         </span>
                                     </div>
                                 ) : (
-                                    /* Read Item (Dimmer) */
+                                    /* Read Item (Dimmer/Lighter) */
                                     <div
                                         key={`${notification.actor_id}-${notification.created_at}-${index}`}
-                                        className="p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-pointer group opacity-70 hover:opacity-100"
+                                        className="p-4 rounded-xl bg-black/20 backdrop-blur-sm border border-transparent hover:border-white/10 hover:bg-white/5 transition-all duration-300 cursor-pointer group opacity-60 hover:opacity-100"
                                     >
                                         <div className="flex items-center gap-3 mb-2">
                                             <img
@@ -247,7 +258,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
                                             </p>
                                         </div>
                                         <p className="text-sm text-gray-400 group-hover:text-gray-200 transition-colors">
-                                            {getNotificationMessage(notification.content)}
+                                            {getNotificationMessage(notification, t)}
                                         </p>
                                         <span className="text-xs text-gray-600 mt-2 block">
                                             {formatRelativeTime(notification.created_at, t)}

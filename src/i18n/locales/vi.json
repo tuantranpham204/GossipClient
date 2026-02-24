@@ -86,7 +86,16 @@
         "time_ago_day": "{{count}} ngày trước",
         "time_ago_days": "{{count}} ngày trước",
         "empty": "Chưa có thông báo nào",
-        "end_of_list": "Bạn đã xem hết thông báo!"
+        "end_of_list": "Bạn đã xem hết thông báo!",
+        "types": {
+            "unread_message": "đã gửi cho bạn một tin nhắn",
+            "private_message_strangers_request": "muốn gửi tin nhắn cho bạn",
+            "group_join_request": "muốn tham gia nhóm của bạn",
+            "friend_request": "đã gửi yêu cầu kết bạn",
+            "follow_request": "đã bắt đầu theo dõi bạn",
+            "friend_request_accepted": "đã chấp nhận yêu cầu kết bạn của bạn",
+            "follow_request_accepted": "đã chấp nhận yêu cầu theo dõi của bạn"
+        }
     },
     "landing": {
         "hero_subtitle": "Nơi những cuộc trò chuyện <italic>tuôn chảy</italic> như dòng nước.",

@@ -6,12 +6,13 @@ interface NotificationParams {
 }
 
 interface NotificationData {
+  id: number;
   user_id: number;
   actor_id: number;
   actor_username: string;
   actor_avatar_url: string | null;
-  status: number;
-  notifiable_type: number;
+  status: string;
+  notification_type: string;
   content: Record<string, any>;
   updated_at: string;
   created_at: string;
