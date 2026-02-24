@@ -78,6 +78,16 @@
         "settings": "Cài đặt",
         "sign_out": "Đăng xuất"
     },
+    "notifications": {
+        "title": "Thông báo",
+        "mark_all_read": "Đánh dấu tất cả đã đọc",
+        "time_ago_min": "{{count}} phút trước",
+        "time_ago_hour": "{{count}} giờ trước",
+        "time_ago_day": "{{count}} ngày trước",
+        "time_ago_days": "{{count}} ngày trước",
+        "empty": "Chưa có thông báo nào",
+        "end_of_list": "Bạn đã xem hết thông báo!"
+    },
     "landing": {
         "hero_subtitle": "Nơi những cuộc trò chuyện <italic>tuôn chảy</italic> như dòng nước.",
         "enter_button": "Bắt đầu trò chuyện :>"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import NavigationSidebar from '../components/NavigationSidebar';
 import { 
   Search, 
@@ -15,17 +15,6 @@ import defaultAvatar from '../assets/defaultAvatar.jpg';
 import backgroundGif from '../assets/background.gif';
 
 const HomePage: React.FC = () => {
-    // Basic state for the notification modal demo
-    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-
-    // Listen for custom event from sidebar (or better, lift state up in real app)
-    React.useEffect(() => {
-        const handleToggle = () => setIsNotificationOpen(prev => !prev);
-        window.addEventListener('toggleNotifications', handleToggle);
-        return () => window.removeEventListener('toggleNotifications', handleToggle);
-    }, []);
-
-    const toggleNotificationModal = () => setIsNotificationOpen(!isNotificationOpen);
 
   return (
     <div className="bg-black h-screen w-screen overflow-hidden selection:bg-brand-500 selection:text-white text-white relative">
@@ -208,32 +197,6 @@ const HomePage: React.FC = () => {
             </section>
 
         </main>
-
-        {/* Notification Modal */}
-         <div className={`fixed inset-0 z-50 ${isNotificationOpen ? '' : 'hidden'}`}>
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={toggleNotificationModal}></div>
-            
-            <div className={`absolute left-24 top-6 bottom-6 w-96 bg-black/80 glass-panel border border-white/10 rounded-2xl flex flex-col shadow-2xl transform transition-all duration-300 ${isNotificationOpen ? 'translate-x-0 opacity-100' : 'translate-x-[-20px] opacity-0'}`} onClick={(e) => e.stopPropagation()}>
-                
-                <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-white">Notifications</h2>
-                    <button className="text-xs text-brand-400 hover:text-brand-300 transition-colors">Mark all as read</button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3">
-                    {/* Items */}
-                    <div className="p-4 rounded-xl bg-white/20 border border-white/10 hover:bg-white/25 transition-colors cursor-pointer relative group">
-                        <div className="absolute top-4 right-4 w-2 h-2 bg-brand-500 rounded-full"></div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <img src={defaultAvatar} className="w-8 h-8 rounded-full object-cover ring-2 ring-brand-500" alt="Sarah" />
-                            <p className="text-sm font-bold text-white">Sarah Jensen</p>
-                        </div>
-                        <p className="text-sm text-gray-100">Commented on your post: "This design is fire! 🔥"</p>
-                        <span className="text-xs text-brand-300 mt-2 block font-medium">2 min ago</span>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     </div>
   );

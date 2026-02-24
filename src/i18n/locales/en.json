@@ -78,6 +78,16 @@
         "settings": "Settings",
         "sign_out": "Sign Out"
     },
+    "notifications": {
+        "title": "Notifications",
+        "mark_all_read": "Mark all as read",
+        "time_ago_min": "{{count}} min ago",
+        "time_ago_hour": "{{count}} hour ago",
+        "time_ago_day": "{{count}} day ago",
+        "time_ago_days": "{{count}} days ago",
+        "empty": "No notifications yet",
+        "end_of_list": "You're all caught up!"
+    },
     "landing": {
         "hero_subtitle": "Where conversations <italic>flow</italic> like liquid.",
         "enter_button": "Enter Gossip"

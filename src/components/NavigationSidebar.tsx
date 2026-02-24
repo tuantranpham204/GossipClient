@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import NotificationCenter from './NotificationCenter';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSignOutMutation } from '../services/auth.service';
 import { useProfileImage } from '../services/user.service';
@@ -33,15 +34,14 @@ const NavigationSidebar: React.FC = () => {
 
   const toggleNotifications = () => {
     setIsNotificationsOpen(!isNotificationsOpen);
-    
-    // Dispatch custom event for other components to listen if needed, 
-    // though in React state management (Context/Zustand) is better.
-    // For now we'll stick to the provided template's visual logic.
-    const event = new CustomEvent('toggleNotifications');
-    window.dispatchEvent(event);
+  };
+
+  const closeNotifications = () => {
+    setIsNotificationsOpen(false);
   };
 
   return (
+    <>
     <nav className="w-20 h-full border-r border-white/5 flex flex-col items-center justify-between py-6 bg-black/40 backdrop-blur-xl z-20">
       
       {/* Logo */}
@@ -143,6 +143,9 @@ const NavigationSidebar: React.FC = () => {
       </div>
 
     </nav>
+
+      <NotificationCenter isOpen={isNotificationsOpen} onClose={closeNotifications} />
+    </>
   );
 };
 
