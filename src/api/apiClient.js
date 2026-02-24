@@ -96,6 +96,10 @@ export const handleApiResponse = async (
         useAuthStore.getState().logout();
         throw new Error(responseData.message || t("api.unauthorized"));
       }
+      if (error.response.status === 404) {
+        toast.warning(responseData.message || t("api.unprocessable_content"));
+        throw new Error(responseData.message || t("api.unprocessable_content"));
+      }
       // For other errors, rethrow or handle specific cases
       throw new Error(responseData.message || error.message);
     }

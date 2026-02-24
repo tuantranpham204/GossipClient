@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSignOutMutation } from '../services/auth.service';
+import { useProfileImage } from '../services/user.service';
 import { 
   Search, 
   MessageCircle, 
@@ -16,7 +17,8 @@ import {
 import logo from '../assets/logo.png';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
 import LanguageSwitcher from './LanguageSwitcher';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
+import { useAuthStore } from '../store/useAuthStore';
 
 const NavigationSidebar: React.FC = () => {
     const { t } = useTranslation();
@@ -24,6 +26,8 @@ const NavigationSidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { mutate: signOut } = useSignOutMutation();
+  const user = useAuthStore((state: any) => state.user);
+  const { data: avatarData } = useProfileImage('avatar', user?.userId);
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -103,23 +107,22 @@ const NavigationSidebar: React.FC = () => {
       {/* User Avatar & Menu */}
       <div className="relative group w-full flex justify-center pb-2">
         <div className="relative cursor-pointer">
-          <img src={defaultAvatar} className="w-12 h-12 rounded-full border-2 border-white/10 hover:border-brand-500 transition-colors object-cover ring-2 ring-transparent group-hover:ring-brand-500/30" alt="Profile" />
+          <img src={avatarData?.data?.avatar_url || defaultAvatar} className="w-12 h-12 rounded-full border-2 border-white/10 hover:border-brand-500 transition-colors object-cover ring-2 ring-transparent group-hover:ring-brand-500/30" alt="Profile" />
           <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-black"></div>
         </div>
 
         {/* Drop-right Menu */}
         <div className="absolute left-16 bottom-0 w-48 bg-black/90 glass-panel border border-white/10 rounded-2xl shadow-2xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-x-[-10px] group-hover:translate-x-0 origin-bottom-left z-50">
           <div className="px-3 py-2 border-b border-white/5 mb-1">
-            <p className="text-sm font-bold text-white">Your Name</p>
-            <p className="text-xs text-gray-500">@username</p>
+            <p className="text-sm font-bold text-white">{useAuthStore.getState().user?.name}</p>
+            <p className="text-xs text-gray-500">@{useAuthStore.getState().user?.username}</p>
           </div>
-          <Link to="/profile" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors">
+          <Link to={`/profile/${useAuthStore.getState().user?.userId}`} className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors">
             <User className="w-4 h-4" /> {t('sidebar.profile')}
           </Link>
            <a href="#" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors">
             <Settings className="w-4 h-4" /> {t('sidebar.settings')}
           </a>
-          <div className="h-px bg-white/5 my-1"></div>
           <div className="px-3 py-2">
             <LanguageSwitcher className="w-full justify-start" />
           </div>

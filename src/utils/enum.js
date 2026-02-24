@@ -5,7 +5,23 @@ export const ROLES = {
 
 export const GENDER = {
   MALE: 1,
-  FEMALE: 2,
+  FEMALE: 0,
+};
+
+export const CAPACITY = {
+  USER: "user",
+  HOST: "host",
+};
+
+export const IMAGE_TYPE = {
+  AVATAR: "avatar",
+  BG_IMG: "bg_img",
+};
+
+export const RELATIONSHIP_STATUS = {
+  SINGLE: 0,
+  IN_A_RELATIONSHIP: 1,
+  MARRIED: 2,
 };
 
 export const MESSAGE_TYPE = {

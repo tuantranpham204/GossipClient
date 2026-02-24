@@ -1,18 +1,67 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import NavigationSidebar from '../components/NavigationSidebar';
-import { useUserProfile } from '../services/user.service';
+import { useUserProfile, updateProfileImage, useProfileImage, updateUserProfile } from '../services/user.service';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, BadgeCheck, Mail, Cake, Heart, Camera, Settings, CopyPlus, UserPlus, Lock } from 'lucide-react';
+import ImageUploadModal from '../components/modals/ImageUploadModal';
+import UpdateProfileModal from '../components/modals/UpdateProfileModal';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
 import backgroundGif from '../assets/background.gif';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 
 const ProfilePage: React.FC = () => {
     const { userId } = useParams<{ userId: string }>();
     const { data: userData, isLoading, isError } = useUserProfile(userId);
+    const { data: avatarData } = useProfileImage('avatar', userId);
+    const { data: bgData } = useProfileImage('bg_img', userId);
+    const queryClient = useQueryClient();
 
     const user = userData?.data;
     const isHost = user?.capacity === 'host';
+
+    const [updatingImage, setUpdatingImage] = React.useState<'avatar' | 'bg_img' | null>(null);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isUpdateProfileOpen, setIsUpdateProfileOpen] = React.useState(false);
+    
+    // Import the new modal (assumed auto-import or manual if needed)
+    // I need to add the import at the top first, but I can't do two ranges in one replace_file_content.
+    // I will replace the state and handlers first.
+
+    const updateImageMutation = useMutation({
+        mutationFn: ({ type, file }: { type: 'avatar' | 'bg_img', file: File }) => 
+            updateProfileImage(type, file),
+        onSuccess: () => {
+             queryClient.invalidateQueries({ queryKey: ['user', userId] });
+             setIsModalOpen(false);
+             setUpdatingImage(null);
+             window.location.reload();
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        }
+    });
+
+    const updateProfileMutation = useMutation({
+        mutationFn: (data: any) => updateUserProfile(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['user', userId] });
+            setIsUpdateProfileOpen(false);
+            window.location.reload();
+        }
+    });
+
+    const handleUpload = (file: File) => {
+        if (updatingImage) {
+            updateImageMutation.mutate({ type: updatingImage, file });
+        }
+    };
+
+    const openModal = (type: 'avatar' | 'bg_img') => {
+        setUpdatingImage(type);
+        setIsModalOpen(true);
+    };
 
     if (isLoading) {
         return (
@@ -57,6 +106,22 @@ const ProfilePage: React.FC = () => {
 
     return (
         <div className="bg-black h-screen w-screen overflow-hidden selection:bg-indigo-500 selection:text-white text-white relative">
+            <ImageUploadModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onUpload={handleUpload}
+                type={updatingImage === 'avatar' ? 'avatar' : 'bg_img'}
+                isUploading={updateImageMutation.isPending}
+            />
+
+            <UpdateProfileModal 
+                isOpen={isUpdateProfileOpen}
+                onClose={() => setIsUpdateProfileOpen(false)}
+                onUpdate={(data) => updateProfileMutation.mutate(data)}
+                isUpdating={updateProfileMutation.isPending}
+                initialData={user}
+            />
+
             {/* Background Image */}
             <div 
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
@@ -75,10 +140,18 @@ const ProfilePage: React.FC = () => {
                     
                     {/* Cover Image */}
                     <div className="h-64 md:h-80 w-full relative overflow-hidden group">
-                        <img src={backgroundGif} className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-700" alt="Cover" />
+                        <img 
+                             src={bgData?.data?.bg_img_url || user.background_image_data?.url || backgroundGif} 
+                             className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-700" 
+                             alt="Cover" 
+                        />
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
                         {isHost && (
-                            <button title="Change Cover" className="absolute top-6 right-6 p-2 bg-black/50 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-all backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100">
+                            <button 
+                                onClick={() => openModal('bg_img')}
+                                title="Change Cover" 
+                                className="absolute top-6 right-6 p-2 bg-black/50 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-all backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100"
+                            >
                                 <Camera className="w-5 h-5" />
                             </button>
                         )}
@@ -94,65 +167,73 @@ const ProfilePage: React.FC = () => {
                             <div className="relative group shrink-0">
                                 <div className="w-32 h-32 md:w-40 md:h-40 rounded-full p-1.5 bg-black ring-1 ring-white/10 relative overflow-hidden">
                                     <img 
-                                        src={user.avatar_data?.url || defaultAvatar} 
+                                        src={avatarData?.data?.avatar_url || user.avatar_data?.url || defaultAvatar} 
                                         className="w-full h-full rounded-full object-cover border-4 border-black group-hover:scale-105 transition-transform duration-500" 
                                         alt={user.username} 
                                     />
-                                    {isHost && (
-                                        <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer backdrop-blur-[2px]">
-                                            <Camera className="w-8 h-8 text-white" />
-                                        </div>
-                                    )}
                                 </div>
+                                {isHost && (
+                                    <button
+                                        onClick={() => openModal('avatar')}
+                                        className="absolute bottom-1 right-1 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full transition-all shadow-lg border-2 border-black z-20 hover:scale-110"
+                                        title="Change Avatar"
+                                    >
+                                        <Camera className="w-4 h-4" />
+                                    </button>
+                                )}
                             </div>
 
-                            {/* Basic Info & Stats */}
-                            <div className="flex-1 flex flex-col md:flex-row items-end md:items-end justify-between mb-4 gap-4">
-                                <div className="flex flex-col md:flex-row md:items-end gap-6 w-full md:w-auto">
-                                    <div>
-                                        <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-2">
-                                            @{user.username} 
-                                            <BadgeCheck className="w-6 h-6 text-blue-400 fill-current" />
-                                        </h1>
-                                        <p className="text-gray-400 font-medium">{user.name} {user.surname}</p>
-                                    </div>
-
-                                    {/* Stats */}
-                                    <div className="flex items-center gap-6 py-1">
-                                        <div className="text-center md:text-left">
-                                            <span className="text-white font-bold mr-1.5">{user.friends_amount}</span>
-                                            <span className="text-md text-gray-400 tracking-wider">friends</span>
+                        {/* Basic Info & Stats */}
+                        <div className="flex-1 flex flex-col md:flex-row items-end justify-between mb-4 gap-4">
+                            <div className="flex flex-col gap-1 w-full md:w-auto">
+                                <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                                    <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-2">
+                                        @{user.username} 
+                                        <BadgeCheck className="w-6 h-6 text-blue-400 fill-current" />
+                                    </h1>
+                                    
+                                    {/* Stats - moved here */}
+                                    <div className="flex items-center gap-6">
+                                        <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+                                            <span className="text-white font-bold">{user.friends_amount}</span>
+                                            <span className="text-sm text-gray-400">friends</span>
                                         </div>
-                                        <div className="text-center md:text-left">
-                                            <span className="text-white font-bold mr-1.5">{user.followers_amount}</span>
-                                            <span className="text-md text-gray-400 tracking-wider">followers</span>
+                                        <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+                                            <span className="text-white font-bold">{user.followers_amount}</span>
+                                            <span className="text-sm text-gray-400">followers</span>
                                         </div>
-                                        <div className="text-center md:text-left">
-                                            <span className="text-white font-bold mr-1.5">{user.following_amount}</span>
-                                            <span className="text-md text-gray-400 tracking-wider">following</span>
+                                        <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+                                            <span className="text-white font-bold">{user.following_amount}</span>
+                                            <span className="text-sm text-gray-400">following</span>
                                         </div>
                                     </div>
                                 </div>
+                                <p className="text-gray-400 font-medium">{user.name} {user.surname}</p>
+                            </div>
 
-                                {/* Actions */}
-                                <div className="flex gap-3 shrink-0">
-                                    {isHost ? (
-                                        <button title="Settings" className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors border border-white/5">
-                                            <Settings className="w-5 h-5" />
+                            {/* Actions */}
+                            <div className="flex gap-3 shrink-0">
+                                {isHost ? (
+                                    <button 
+                                        onClick={() => setIsUpdateProfileOpen(true)}
+                                        title="Settings" 
+                                        className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors border border-white/5"
+                                    >
+                                        <Settings className="w-5 h-5" />
+                                    </button>
+                                ) : (
+                                    <>
+                                        <button title="Add Friend" className="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors shadow-lg shadow-indigo-500/20">
+                                            <UserPlus className="w-5 h-5" />
                                         </button>
-                                    ) : (
-                                        <>
-                                            <button title="Add Friend" className="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors shadow-lg shadow-indigo-500/20">
-                                                <UserPlus className="w-5 h-5" />
-                                            </button>
-                                            <button title="Follow" className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors border border-white/5">
-                                                <CopyPlus className="w-5 h-5" />
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
+                                        <button title="Follow" className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors border border-white/5">
+                                            <CopyPlus className="w-5 h-5" />
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
+                    </div>
 
                         {/* Bio (Brief) */}
                         <div className="mb-10 text-center md:text-left">
@@ -205,18 +286,14 @@ const ProfilePage: React.FC = () => {
                                         <h3 className="text-sm font-medium text-gray-500">Relationship Status</h3>
                                         {/* Mapping enums would be ideal here if valid values provided. Assuming raw or simple text for now */}
                                         {renderPrivacyField(user.is_rel_status_public, 
-                                            user.relationship_status === 0 ? 'Single' : user.relationship_status
+                                            user.relationship_status === 0 ? 'Single' : String(user.relationship_status)
                                         )}
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
-
                 </section>
-
             </main>
         </div>
     );
