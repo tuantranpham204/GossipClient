@@ -21,7 +21,7 @@ interface NotificationItem {
     created_at: string;
 }
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 10;  
 
 /**
  * Format a timestamp string into a relative time string.

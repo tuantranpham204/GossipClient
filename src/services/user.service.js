@@ -61,3 +61,15 @@ export const useProfileImage = (type, userId, options = {}) => {
 export const updateUserProfile = async (data) => {
   return handleApiResponse(apiClient.put("/profiles/update", data));
 };
+
+export const requestFriend = async (receiverId) => {
+  return handleApiResponse(
+    apiClient.post(`/user_relations/friend/${receiverId}`),
+  );
+};
+
+export const requestFollow = async (receiverId) => {
+  return handleApiResponse(
+    apiClient.post(`/user_relations/follow/${receiverId}`),
+  );
+};

@@ -25,6 +25,8 @@ interface UserData {
   dob: string | null;
   is_rel_status_public: boolean;
   relationship_status: number | string;
+  friend_status?: string;
+  follow_status?: string;
 }
 
 
@@ -44,3 +46,7 @@ export declare const updateProfileImage: (type: 'avatar' | 'bg_img', file: File)
 export declare const useProfileImage: (type: 'avatar' | 'bg_img', userId: string | undefined, options?: any) => UseQueryResult<any, Error>;
 
 export declare const updateUserProfile: (data: any) => Promise<any>;
+
+export declare const requestFriend: (receiverId: number | string) => Promise<any>;
+
+export declare const requestFollow: (receiverId: number | string) => Promise<any>;

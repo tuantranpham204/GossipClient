@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import NavigationSidebar from '../components/NavigationSidebar';
-import { Search, UserCheck, UserPlus, CopyPlus, MessageSquare, Loader2, Eye } from 'lucide-react';
+import { Search, UserCheck, UserPlus, CopyPlus, CopyCheck, MessageSquare, Loader2, Eye } from 'lucide-react';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
 import backgroundGif from '../assets/background.gif';
-import { useSearchUsers } from '../services/user.service';
+import { useSearchUsers, requestFriend, requestFollow } from '../services/user.service';
+// @ts-ignore
+import { USER_RELATION_STATUS } from '../utils/enum';
 
 interface UserData {
   user_id: number;
@@ -13,6 +16,8 @@ interface UserData {
   surname: string;
   avatar_data: { url: string } | null;
   status: string | null;
+  friend_status?: string;
+  follow_status?: string;
   initials?: string;
   friends_amount: number;
   followers_amount: number;
@@ -21,6 +26,7 @@ interface UserData {
 
 const SearchPage: React.FC = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(20); // Default to 20 as per API response example
     const [searchQuery, setSearchQuery] = useState('');
@@ -53,6 +59,24 @@ const SearchPage: React.FC = () => {
     const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setItemsPerPage(parseInt(e.target.value));
         setCurrentPage(1);
+    };
+
+    const handleFriendRequest = async (userId: number) => {
+        try {
+            await requestFriend(userId);
+            queryClient.invalidateQueries({ queryKey: ['users'] });
+        } catch (error) {
+            // Error is handled by apiClient toast
+        }
+    };
+
+    const handleFollowRequest = async (userId: number) => {
+        try {
+            await requestFollow(userId);
+            queryClient.invalidateQueries({ queryKey: ['users'] });
+        } catch (error) {
+            // Error is handled by apiClient toast
+        }
     };
 
   return (
@@ -139,20 +163,40 @@ const SearchPage: React.FC = () => {
                                                 <Eye className="w-5 h-5" />
                                             </button>
 
-                                            {/* Logic for friend status can be improved when API supports it. For now assuming default state or using status if available */}
-                                            {user.status === 'Requested' ? (
-                                                <button title="Friend Request Sent" className="p-2.5 bg-brand-600 text-white rounded-xl transition-all hover:scale-110 relative group">
+                                            {/* Friend Status Button */}
+                                            {user.friend_status === USER_RELATION_STATUS.PENDING ? (
+                                                <button title="Friend Request Sent" className="p-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl transition-all hover:scale-110 relative group">
                                                     <UserCheck className="w-5 h-5" />
                                                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></div>
                                                 </button>
+                                            ) : user.friend_status === USER_RELATION_STATUS.ACCEPTED ? (
+                                                <button title="Friends" className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-all hover:scale-110 relative group">
+                                                    <UserCheck className="w-5 h-5" />
+                                                </button>
                                             ) : (
-                                                <button title="Add Friend" className="p-2.5 bg-white/5 hover:bg-brand-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
+                                                <button 
+                                                    title="Add Friend" 
+                                                    onClick={() => handleFriendRequest(user.user_id)}
+                                                    className="p-2.5 bg-white/5 hover:bg-brand-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110"
+                                                >
                                                     <UserPlus className="w-5 h-5" />
                                                 </button>
                                             )}
-                                            <button title="Follow" className="p-2.5 bg-white/5 hover:bg-pink-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
-                                                <CopyPlus className="w-5 h-5" />
-                                            </button>
+
+                                            {/* Follow Status Button */}
+                                            {user.follow_status !== USER_RELATION_STATUS.NOT_FOLLOW && user.follow_status ? (
+                                                <button title="Following" className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-all hover:scale-110">
+                                                    <CopyCheck className="w-5 h-5" />
+                                                </button>
+                                            ) : (
+                                                <button 
+                                                    title="Follow" 
+                                                    onClick={() => handleFollowRequest(user.user_id)}
+                                                    className="p-2.5 bg-white/5 hover:bg-pink-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110"
+                                                >
+                                                    <CopyPlus className="w-5 h-5" />
+                                                </button>
+                                            )}
                                             <button title="Message" className="p-2.5 bg-white/5 hover:bg-green-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
                                                 <MessageSquare className="w-5 h-5" />
                                             </button>
