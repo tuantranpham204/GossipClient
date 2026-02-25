@@ -14,11 +14,10 @@ interface UserData {
   username: string;
   name: string;
   surname: string;
-  avatar_data: { url: string } | null;
+  avatar_url: string | null;
   status: string | null;
   friend_status?: string;
   follow_status?: string;
-  initials?: string;
   friends_amount: number;
   followers_amount: number;
   following_amount: number;
@@ -128,8 +127,8 @@ const SearchPage: React.FC = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                                 {users.map(user => (
                                     <div key={user.user_id} className="bg-white/5 rounded-2xl p-6 border border-white/5 hover:bg-white/10 transition-all flex flex-col items-center group animate-fade-in-up">
-                                        {user.avatar_data?.url ? (
-                                            <img src={user.avatar_data.url} alt={user.username} className="w-20 h-20 rounded-full object-cover mb-4 ring-2 ring-transparent group-hover:ring-brand-500/50 transition-all" />
+                                        {user.avatar_url ? (
+                                            <img src={user.avatar_url} alt={user.username} className="w-20 h-20 rounded-full object-cover mb-4 ring-2 ring-transparent group-hover:ring-brand-500/50 transition-all" />
                                         ) : (
                                             <img src={defaultAvatar} alt={user.username} className="w-20 h-20 rounded-full object-cover mb-4 ring-2 ring-transparent group-hover:ring-brand-500/50 transition-all" />
                                         )}

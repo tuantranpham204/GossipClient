@@ -83,14 +83,14 @@ const NavigationSidebar: React.FC = () => {
         </button>
 
         {/* Friends */}
-        <Link to="/friends" className="relative group flex items-center justify-center p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+        <Link to="/friends" className={`relative group flex items-center justify-center p-3 rounded-xl transition-all ${isActive('/friends') ? 'bg-brand-600 text-white shadow-lg shadow-indigo-500/30' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}>
           <Users className="w-6 h-6" />
           <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-black">2</div>
           <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">{t('sidebar.friends')}</span>
         </Link>
 
         {/* Follows */}
-        <Link to="/follows" className="relative group flex items-center justify-center p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+        <Link to="/follows" className={`relative group flex items-center justify-center p-3 rounded-xl transition-all ${isActive('/follows') ? 'bg-brand-600 text-white shadow-lg shadow-indigo-500/30' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}>
           <UserCheck className="w-6 h-6" />
           <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-black">5</div>
            <span className="absolute left-14 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">{t('sidebar.follows')}</span>
