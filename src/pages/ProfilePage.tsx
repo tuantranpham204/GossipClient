@@ -1,17 +1,18 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import NavigationSidebar from '../components/NavigationSidebar';
 import { useUserProfile, updateProfileImage, useProfileImage, updateUserProfile, requestFriend, requestFollow } from '../services/user.service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, BadgeCheck, Mail, Cake, Heart, Camera, Settings, CopyPlus, UserPlus, Lock, UserCheck, CopyCheck } from 'lucide-react';
+import { Loader2, BadgeCheck, Mail, Cake, Heart, Camera, Settings, CopyPlus, UserPlus, Lock, UserCheck, CopyCheck, MessageSquare, Clock, Ban } from 'lucide-react';
 import ImageUploadModal from '../components/modals/ImageUploadModal';
 import UpdateProfileModal from '../components/modals/UpdateProfileModal';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
-// @ts-ignore
-import { USER_RELATION_STATUS } from '../utils/enum';
 import backgroundGif from '../assets/background.gif';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { requestPrivateRoom } from '../services/room.service';
+// @ts-ignore
+import { USER_RELATION_STATUS, ROOM_TYPE } from '../utils/enum';
 
 const ProfilePage: React.FC = () => {
     const { userId } = useParams<{ userId: string }>();
@@ -19,6 +20,7 @@ const ProfilePage: React.FC = () => {
     const { data: avatarData } = useProfileImage('avatar', userId);
     const { data: bgData } = useProfileImage('bg_img', userId);
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const user = userData?.data;
     const isHost = user?.capacity === 'host';
@@ -26,6 +28,13 @@ const ProfilePage: React.FC = () => {
     const [updatingImage, setUpdatingImage] = React.useState<'avatar' | 'bg_img' | null>(null);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [isUpdateProfileOpen, setIsUpdateProfileOpen] = React.useState(false);
+    const [roomType, setRoomType] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        if (user && 'room_type' in user) {
+            setRoomType((user as any).room_type);
+        }
+    }, [user]);
     
     // Import the new modal (assumed auto-import or manual if needed)
     // I need to add the import at the top first, but I can't do two ranges in one replace_file_content.
@@ -80,6 +89,27 @@ const ProfilePage: React.FC = () => {
         try {
             await requestFollow(user.user_id);
             queryClient.invalidateQueries({ queryKey: ['user', userId] });
+        } catch (error) {
+            // Error is handled by apiClient toast
+        }
+    };
+
+    const handleMessageClick = async () => {
+        if (!user?.user_id) return;
+        
+        if (roomType === ROOM_TYPE.PRIVATE_STRANGERS || roomType === ROOM_TYPE.PRIVATE_FRIENDS) {
+            navigate(`/messages?user=${user.user_id}`);
+            return;
+        }
+
+        try {
+            const res = await requestPrivateRoom(user.user_id);
+            if (res?.data?.room_type) {
+                setRoomType(res.data.room_type);
+                if (res.data.room_type === ROOM_TYPE.PRIVATE_STRANGERS || res.data.room_type === ROOM_TYPE.PRIVATE_FRIENDS) {
+                    setTimeout(() => navigate(`/messages?user=${user.user_id}`), 500);
+                }
+            }
         } catch (error) {
             // Error is handled by apiClient toast
         }
@@ -279,6 +309,36 @@ const ProfilePage: React.FC = () => {
                                                 <CopyPlus className="w-5 h-5" />
                                             </button>
                                         )}
+
+                                        {/* Message Button */}
+                                        {(() => {
+                                            if (roomType === ROOM_TYPE.PRIVATE_STRANGERS_PENDING) {
+                                                return (
+                                                    <button title="Request Pending" onClick={handleMessageClick} className="p-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl transition-all hover:scale-110 group relative">
+                                                        <Clock className="w-5 h-5" />
+                                                    </button>
+                                                );
+                                            }
+                                            if (roomType === ROOM_TYPE.PRIVATE_STRANGERS_DECLINED) {
+                                                return (
+                                                    <button title="Request Declined" onClick={handleMessageClick} className="p-2.5 bg-red-600/20 text-red-500 rounded-xl transition-all hover:scale-110 group relative">
+                                                        <Ban className="w-5 h-5" />
+                                                    </button>
+                                                );
+                                            }
+                                            if (roomType === ROOM_TYPE.PRIVATE_STRANGERS || roomType === ROOM_TYPE.PRIVATE_FRIENDS) {
+                                                return (
+                                                    <button title="Message" onClick={handleMessageClick} className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-all hover:scale-110 group relative">
+                                                        <MessageSquare className="w-5 h-5" />
+                                                    </button>
+                                                );
+                                            }
+                                            return (
+                                                <button title="Message" onClick={handleMessageClick} className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors border border-white/5 group relative">
+                                                    <MessageSquare className="w-5 h-5" />
+                                                </button>
+                                            );
+                                        })()}
                                     </>
                                 )}
                             </div>

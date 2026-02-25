@@ -91,7 +91,7 @@
         "end_of_list": "You're all caught up!",
         "types": {
             "unread_message": "sent you a message",
-            "private_message_strangers_request": "wants to send you a message",
+            "private_strangers_room_request": "wants to send you a message",
             "group_join_request": "wants to join your group",
             "friend_request": "sent you a friend request",
             "follow_request": "started following you",
@@ -115,7 +115,9 @@
         "add_friend": "Add Friend",
         "follow": "Follow",
         "message": "Message",
-        "show": "Show:"
+        "show": "Show:",
+        "request_pending": "Request Pending",
+        "request_declined": "Request Declined"
     },
     "relations": {
         "friends": "Friends",

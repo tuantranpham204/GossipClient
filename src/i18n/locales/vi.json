@@ -91,7 +91,7 @@
         "end_of_list": "Bạn đã xem hết thông báo!",
         "types": {
             "unread_message": "đã gửi cho bạn một tin nhắn",
-            "private_message_strangers_request": "muốn gửi tin nhắn cho bạn",
+            "private_strangers_room_request": "muốn gửi tin nhắn cho bạn",
             "group_join_request": "muốn tham gia nhóm của bạn",
             "friend_request": "đã gửi yêu cầu kết bạn",
             "follow_request": "đã bắt đầu theo dõi bạn",
@@ -115,7 +115,9 @@
         "add_friend": "Thêm bạn",
         "follow": "Theo dõi",
         "message": "Nhắn tin",
-        "show": "Hiển thị:"
+        "show": "Hiển thị:",
+        "request_pending": "Đang chờ yêu cầu",
+        "request_declined": "Yêu cầu bị từ chối"
     },
     "relations": {
         "friends": "Bạn bè",

@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import NavigationSidebar from '../components/NavigationSidebar';
-import { Search, UserCheck, UserPlus, CopyPlus, CopyCheck, MessageSquare, Loader2, Eye } from 'lucide-react';
+import { Search, UserCheck, UserPlus, CopyPlus, CopyCheck, MessageSquare, Loader2, Eye, Clock, Ban } from 'lucide-react';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
 import backgroundGif from '../assets/background.gif';
 import { useSearchUsers, requestFriend, requestFollow } from '../services/user.service';
+import { requestPrivateRoom } from '../services/room.service';
 // @ts-ignore
-import { USER_RELATION_STATUS } from '../utils/enum';
+import { USER_RELATION_STATUS, ROOM_TYPE } from '../utils/enum';
 
 interface UserData {
   user_id: number;
@@ -33,6 +34,7 @@ const SearchPage: React.FC = () => {
     const [itemsPerPage, setItemsPerPage] = useState(20); // Default to 20 as per API response example
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
+    const [roomTypes, setRoomTypes] = useState<Record<number, string>>({});
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -78,6 +80,26 @@ const SearchPage: React.FC = () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
         } catch (error) {
             // Error is handled by apiClient toast
+        }
+    };
+
+    const handleMessageClick = async (userId: number) => {
+        const currentType = roomTypes[userId] || (users.find(u => u.user_id === userId) as any)?.room_type;
+        if (currentType === ROOM_TYPE.PRIVATE_STRANGERS || currentType === ROOM_TYPE.PRIVATE_FRIENDS) {
+            navigate(`/messages?user=${userId}`);
+            return;
+        }
+
+        try {
+            const res = await requestPrivateRoom(userId);
+            if (res?.data?.room_type) {
+                setRoomTypes(prev => ({ ...prev, [userId]: res.data.room_type }));
+                if (res.data.room_type === ROOM_TYPE.PRIVATE_STRANGERS || res.data.room_type === ROOM_TYPE.PRIVATE_FRIENDS) {
+                    setTimeout(() => navigate(`/messages?user=${userId}`), 500);
+                }
+            }
+        } catch (error) {
+            // Handled by apiClient toast
         }
     };
 
@@ -199,9 +221,36 @@ const SearchPage: React.FC = () => {
                                                     <CopyPlus className="w-5 h-5" />
                                                 </button>
                                             )}
-                                            <button title={t('search.message')} className="p-2.5 bg-white/5 hover:bg-green-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
-                                                <MessageSquare className="w-5 h-5" />
-                                            </button>
+                                            {/* Message Button */}
+                                            {(() => {
+                                                const rType = roomTypes[user.user_id] || (user as any).room_type;
+                                                if (rType === ROOM_TYPE.PRIVATE_STRANGERS_PENDING) {
+                                                    return (
+                                                        <button title={t('search.request_pending')} onClick={() => handleMessageClick(user.user_id)} className="p-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl transition-all hover:scale-110">
+                                                            <Clock className="w-5 h-5" />
+                                                        </button>
+                                                    );
+                                                }
+                                                if (rType === ROOM_TYPE.PRIVATE_STRANGERS_DECLINED) {
+                                                    return (
+                                                        <button title={t('search.request_declined')} onClick={() => handleMessageClick(user.user_id)} className="p-2.5 bg-red-600/20 text-red-500 rounded-xl transition-all hover:scale-110">
+                                                            <Ban className="w-5 h-5" />
+                                                        </button>
+                                                    );
+                                                }
+                                                if (rType === ROOM_TYPE.PRIVATE_STRANGERS || rType === ROOM_TYPE.PRIVATE_FRIENDS) {
+                                                    return (
+                                                        <button title={t('search.message')} onClick={() => handleMessageClick(user.user_id)} className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-all hover:scale-110">
+                                                            <MessageSquare className="w-5 h-5" />
+                                                        </button>
+                                                    );
+                                                }
+                                                return (
+                                                    <button title={t('search.message')} onClick={() => handleMessageClick(user.user_id)} className="p-2.5 bg-white/5 hover:bg-green-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
+                                                        <MessageSquare className="w-5 h-5" />
+                                                    </button>
+                                                );
+                                            })()}
                                         </div>
                                     </div>
                                 ))}
