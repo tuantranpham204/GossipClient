@@ -212,8 +212,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
                         onClick={() => {
                             readAll(undefined, {
                                 onSuccess: () => {
-                                    setCurrentPage(1);
-                                    setAllNotifications([]);
+                                    setAllNotifications(prev => prev.map(n => ({ ...n, status: NOTIFICATION_STATUS.READ })));
                                 },
                             });
                         }}
