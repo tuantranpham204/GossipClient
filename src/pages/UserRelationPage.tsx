@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import NavigationSidebar from '../components/NavigationSidebar';
 import { Search, MoreHorizontal, Loader2 } from 'lucide-react';
 import { useAcceptedRelations, usePendingRelations, acceptRelation, declineRelation } from '../services/user.service';
@@ -10,6 +11,7 @@ import defaultAvatar from '../assets/defaultAvatar.jpg';
 import backgroundGif from '../assets/background.gif';
 
 const UserRelationPage: React.FC = () => {
+    const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -32,8 +34,8 @@ const UserRelationPage: React.FC = () => {
         per_page: itemsPerPage
     });
 
-    const title = isFriendsView ? 'Friends' : 'Follows';
-    const searchPlaceholder = isFriendsView ? 'Search friends...' : 'Search following...';
+    const title = isFriendsView ? t('relations.friends') : t('relations.follows');
+    const searchPlaceholder = isFriendsView ? t('relations.search_friends') : t('relations.search_following');
     
     const pendingRequests = pendingData?.data || [];
     
@@ -42,8 +44,8 @@ const UserRelationPage: React.FC = () => {
     const meta = acceptedData?.meta;
     const totalPages = meta?.total_pages || 0;
 
-    const requestTitle = isFriendsView ? 'Friend Requests' : 'Follow Requests';
-    const listTitle = isFriendsView ? 'All Friends' : 'Following';
+    const requestTitle = isFriendsView ? t('relations.friend_requests') : t('relations.follow_requests');
+    const listTitle = isFriendsView ? t('relations.all_friends') : t('relations.all_following');
 
     const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages) {
@@ -118,7 +120,7 @@ const UserRelationPage: React.FC = () => {
                                 <div className="flex items-center gap-3">
                                     <h2 className="text-xl font-semibold text-white">{requestTitle}</h2>
                                     <span className="px-2 py-1 bg-red-500/10 text-red-400 text-xs font-bold rounded-lg border border-red-500/20">
-                                        {pendingRequests.length} Pending
+                                        {pendingRequests.length} {t('relations.pending')}
                                     </span>
                                 </div>
         
@@ -148,7 +150,7 @@ const UserRelationPage: React.FC = () => {
                                                         disabled={!!processingRequests[req.requester_id]}
                                                     >
                                                         {processingRequests[req.requester_id] === 'accept' && <Loader2 className="w-4 h-4 animate-spin" />}
-                                                        Confirm
+                                                        {t('relations.confirm')}
                                                     </button>
                                                     <button 
                                                         className="flex-1 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition-colors text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -156,7 +158,7 @@ const UserRelationPage: React.FC = () => {
                                                         disabled={!!processingRequests[req.requester_id]}
                                                     >
                                                         {processingRequests[req.requester_id] === 'decline' && <Loader2 className="w-4 h-4 animate-spin" />}
-                                                        Delete
+                                                        {t('relations.delete')}
                                                     </button>
                                                 </div>
                                             </div>
@@ -170,24 +172,23 @@ const UserRelationPage: React.FC = () => {
                         <div className="space-y-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                             <h2 className="text-xl font-semibold text-white">{listTitle}</h2>
     
-                            {/* Active List Grid */}
                             {isLoading ? (
                                 <div className="flex items-center justify-center py-12">
                                     <Loader2 className="w-8 h-8 text-brand-500 animate-spin" />
                                 </div>
                             ) : isError ? (
                                 <div className="flex items-center justify-center py-12 text-red-500">
-                                    Failed to load {listTitle.toLowerCase()}.
+                                    {t('relations.failed_load', { type: listTitle.toLowerCase() })}
                                 </div>
                             ) : activeList.length === 0 ? (
                                 <div className="flex items-center justify-center py-12 text-gray-400">
-                                    No {listTitle.toLowerCase()} found.
+                                    {t('relations.no_found', { type: listTitle.toLowerCase() })}
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                                     {activeList.map((user: any) => (
                                         <div key={user.user_id} className="bg-white/3 rounded-2xl p-6 border border-white/5 hover:bg-white/[0.07] transition-all flex flex-col items-center group relative cursor-pointer" onClick={() => navigate(`/profile/${user.user_id}`)}>
-                                            <button className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-10" title="More Options" onClick={(e) => { e.stopPropagation(); }}>
+                                            <button className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-10" title={t('relations.more_options')} onClick={(e) => { e.stopPropagation(); }}>
                                                 <MoreHorizontal className="w-5 h-5" />
                                             </button>
                                             <div className="relative mb-4">
@@ -202,7 +203,7 @@ const UserRelationPage: React.FC = () => {
                                                 className="w-full py-2 bg-white/5 hover:bg-brand-600 hover:text-white rounded-lg text-sm font-medium transition-colors text-brand-300 z-10"
                                                 onClick={(e) => { e.stopPropagation(); navigate(`/messages?user=${user.user_id}`); }}
                                             >
-                                                Message
+                                                {t('relations.message')}
                                             </button>
                                         </div>
                                     ))}
@@ -217,7 +218,7 @@ const UserRelationPage: React.FC = () => {
                                         onClick={() => handlePageChange(currentPage - 1)}
                                         disabled={currentPage === 1}
                                     >
-                                        Previous
+                                        {t('common.previous')}
                                     </button>
                                     
                                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
@@ -235,7 +236,7 @@ const UserRelationPage: React.FC = () => {
                                         onClick={() => handlePageChange(currentPage + 1)}
                                         disabled={currentPage === totalPages}
                                     >
-                                        Next
+                                        {t('common.next')}
                                     </button>
                                 </div>
                             )}

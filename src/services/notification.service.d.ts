@@ -35,3 +35,5 @@ export declare const useNotifications: (
 ) => UseQueryResult<NotificationResponse, Error>;
 
 export declare const useReadAllNotifications: () => UseMutationResult<any, Error, void>;
+
+export declare const useReadNotification: () => UseMutationResult<any, Error, number>;

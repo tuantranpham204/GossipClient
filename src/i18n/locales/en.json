@@ -8,6 +8,8 @@
         "success": "Success",
         "warning": "Warning",
         "info": "Info",
+        "previous": "Previous",
+        "next": "Next",
         "footer_rights": "© 2026 Gossip Platform. All rights reserved.",
         "footer_terms": "© 2026 Gossip Platform. Terms & Privacy."
     },
@@ -100,5 +102,36 @@
     "landing": {
         "hero_subtitle": "Where conversations <italic>flow</italic> like liquid.",
         "enter_button": "Enter Gossip"
+    },
+    "search": {
+        "discover_people": "Discover People",
+        "placeholder": "Search by name, username...",
+        "failed_load": "Failed to load users. Please try again.",
+        "friends": "Friends",
+        "followers": "Followers",
+        "following": "Following",
+        "view_profile": "View Profile",
+        "friend_request_sent": "Friend Request Sent",
+        "add_friend": "Add Friend",
+        "follow": "Follow",
+        "message": "Message",
+        "show": "Show:"
+    },
+    "relations": {
+        "friends": "Friends",
+        "follows": "Follows",
+        "search_friends": "Search friends...",
+        "search_following": "Search following...",
+        "friend_requests": "Friend Requests",
+        "follow_requests": "Follow Requests",
+        "pending": "Pending",
+        "confirm": "Confirm",
+        "delete": "Delete",
+        "all_friends": "All Friends",
+        "all_following": "Following",
+        "failed_load": "Failed to load {{type}}.",
+        "no_found": "No {{type}} found.",
+        "more_options": "More Options",
+        "message": "Message"
     }
 }

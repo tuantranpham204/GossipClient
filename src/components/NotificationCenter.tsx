@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
-import { useNotifications, useReadAllNotifications } from '../services/notification.service';
+import { useNotifications, useReadAllNotifications, useReadNotification } from '../services/notification.service';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
 // @ts-ignore
 import { NOTIFICATION_STATUS } from '../utils/enum';
@@ -73,6 +73,9 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
 
     // Read all mutation
     const { mutate: readAll, isPending: isReadingAll } = useReadAllNotifications();
+
+    // Read single mutation
+    const { mutate: readSingleNotification } = useReadNotification();
 
     // Fetch notifications from API (only when panel is open)
     const { data: notifData, isLoading, isFetching } = useNotifications({
@@ -220,6 +223,15 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
                                     /* Unread Item (Brighter/Heavier) */
                                     <div
                                         key={`${notification.actor_id}-${notification.created_at}-${index}`}
+                                        onClick={() => {
+                                            readSingleNotification(notification.id, {
+                                                onSuccess: () => {
+                                                    setAllNotifications(prev => prev.map(n => 
+                                                        n.id === notification.id ? { ...n, status: NOTIFICATION_STATUS.READ } : n
+                                                    ));
+                                                }
+                                            });
+                                        }}
                                         className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(255,255,255,0.1)] transition-all duration-300 cursor-pointer relative group shadow-[0_4px_12px_rgba(0,0,0,0.2)]"
                                     >
                                         {/* Unread dot */}

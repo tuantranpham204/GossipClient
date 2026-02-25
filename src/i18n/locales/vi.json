@@ -8,6 +8,8 @@
         "success": "Thành công",
         "warning": "Cảnh báo",
         "info": "Thông tin",
+        "previous": "Trước",
+        "next": "Tiếp",
         "footer_rights": "© 2026 Nền tảng Gossip. Đã đăng ký bản quyền.",
         "footer_terms": "© 2026 Nền tảng Gossip. Điều khoản & Quyền riêng tư."
     },
@@ -100,5 +102,36 @@
     "landing": {
         "hero_subtitle": "Nơi những cuộc trò chuyện <italic>tuôn chảy</italic> như dòng nước.",
         "enter_button": "Bắt đầu trò chuyện :>"
+    },
+    "search": {
+        "discover_people": "Tìm kiếm đồng dâm",
+        "placeholder": "Tìm kiếm theo họ tên, tên đăng nhập...",
+        "failed_load": "Không tải được đồng dâm. Vui lòng thử lại.",
+        "friends": "Bạn bè",
+        "followers": "Người theo dõi",
+        "following": "Đang theo dõi",
+        "view_profile": "Xem hồ sơ",
+        "friend_request_sent": "Đã gửi yêu cầu kết bạn",
+        "add_friend": "Thêm bạn",
+        "follow": "Theo dõi",
+        "message": "Nhắn tin",
+        "show": "Hiển thị:"
+    },
+    "relations": {
+        "friends": "Bạn bè",
+        "follows": "Đang theo dõi",
+        "search_friends": "Tìm bạn bè...",
+        "search_following": "Tìm người đang theo dõi...",
+        "friend_requests": "Yêu cầu kết bạn",
+        "follow_requests": "Yêu cầu theo dõi",
+        "pending": "Đang chờ",
+        "confirm": "Xác nhận",
+        "delete": "Xóa",
+        "all_friends": "Tất cả bạn bè",
+        "all_following": "Đang theo dõi",
+        "failed_load": "Không tải được {{type}}.",
+        "no_found": "Không tìm thấy {{type}}.",
+        "more_options": "Tùy chọn khác",
+        "message": "Nhắn tin"
     }
 }

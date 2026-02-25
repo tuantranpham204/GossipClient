@@ -34,3 +34,17 @@ export const useReadAllNotifications = () => {
     },
   });
 };
+
+const readNotification = async (id) => {
+  return handleApiResponse(apiClient.patch(`/notifications/read/${id}`));
+};
+
+export const useReadNotification = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: readNotification,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+  });
+};

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import NavigationSidebar from '../components/NavigationSidebar';
 import { Search, UserCheck, UserPlus, CopyPlus, CopyCheck, MessageSquare, Loader2, Eye } from 'lucide-react';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
@@ -18,12 +19,14 @@ interface UserData {
   status: string | null;
   friend_status?: string;
   follow_status?: string;
+  initials?: string;
   friends_amount: number;
   followers_amount: number;
   following_amount: number;
 }
 
 const SearchPage: React.FC = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [currentPage, setCurrentPage] = useState(1);
@@ -98,12 +101,12 @@ const SearchPage: React.FC = () => {
                 
                 {/* Search Header */}
                 <div className="p-6 md:p-10 pb-0">
-                    <h1 className="text-3xl font-bold mb-6">Discover People</h1>
+                    <h1 className="text-3xl font-bold mb-6">{t('search.discover_people')}</h1>
                     <div className="relative max-w-2xl">
                         <Search className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" />
                         <input 
                             type="text" 
-                            placeholder="Search by name, username..." 
+                            placeholder={t('search.placeholder')} 
                             className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-1 focus:ring-brand-500/50 transition-all text-lg shadow-lg"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -120,7 +123,7 @@ const SearchPage: React.FC = () => {
                         </div>
                     ) : isError ? (
                         <div className="flex items-center justify-center h-64 text-red-400">
-                            Failed to load users. Please try again.
+                            {t('search.failed_load')}
                         </div>
                     ) : (
                         <>
@@ -139,23 +142,23 @@ const SearchPage: React.FC = () => {
                                         <div className="flex items-center gap-3 mb-4 text-xs text-gray-400">
                                             <div className="flex flex-col items-center">
                                                 <span className="font-bold text-white">{user.friends_amount}</span>
-                                                <span>Friends</span>
+                                                <span>{t('search.friends')}</span>
                                             </div>
                                             <div className="h-4 w-px bg-white/10"></div>
                                             <div className="flex flex-col items-center">
                                                 <span className="font-bold text-white">{user.followers_amount}</span>
-                                                <span>Followers</span>
+                                                <span>{t('search.followers')}</span>
                                             </div>
                                             <div className="h-4 w-px bg-white/10"></div>
                                             <div className="flex flex-col items-center">
                                                 <span className="font-bold text-white">{user.following_amount}</span>
-                                                <span>Following</span>
+                                                <span>{t('search.following')}</span>
                                             </div>
                                         </div>
 
                                         <div className="flex gap-4 w-full justify-center mt-auto">
                                             <button 
-                                                title="View Profile" 
+                                                title={t('search.view_profile')} 
                                                 onClick={() => navigate(`/profile/${user.user_id}`)}
                                                 className="p-2.5 bg-white/5 hover:bg-blue-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110"
                                             >
@@ -164,17 +167,17 @@ const SearchPage: React.FC = () => {
 
                                             {/* Friend Status Button */}
                                             {user.friend_status === USER_RELATION_STATUS.PENDING ? (
-                                                <button title="Friend Request Sent" className="p-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl transition-all hover:scale-110 relative group">
+                                                <button title={t('search.friend_request_sent')} className="p-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl transition-all hover:scale-110 relative group">
                                                     <UserCheck className="w-5 h-5" />
                                                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></div>
                                                 </button>
                                             ) : user.friend_status === USER_RELATION_STATUS.ACCEPTED ? (
-                                                <button title="Friends" className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-all hover:scale-110 relative group">
+                                                <button title={t('search.friends')} className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-all hover:scale-110 relative group">
                                                     <UserCheck className="w-5 h-5" />
                                                 </button>
                                             ) : (
                                                 <button 
-                                                    title="Add Friend" 
+                                                    title={t('search.add_friend')} 
                                                     onClick={() => handleFriendRequest(user.user_id)}
                                                     className="p-2.5 bg-white/5 hover:bg-brand-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110"
                                                 >
@@ -184,19 +187,19 @@ const SearchPage: React.FC = () => {
 
                                             {/* Follow Status Button */}
                                             {user.follow_status !== USER_RELATION_STATUS.NOT_FOLLOW && user.follow_status ? (
-                                                <button title="Following" className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-all hover:scale-110">
+                                                <button title={t('search.following')} className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-all hover:scale-110">
                                                     <CopyCheck className="w-5 h-5" />
                                                 </button>
                                             ) : (
                                                 <button 
-                                                    title="Follow" 
+                                                    title={t('search.follow')} 
                                                     onClick={() => handleFollowRequest(user.user_id)}
                                                     className="p-2.5 bg-white/5 hover:bg-pink-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110"
                                                 >
                                                     <CopyPlus className="w-5 h-5" />
                                                 </button>
                                             )}
-                                            <button title="Message" className="p-2.5 bg-white/5 hover:bg-green-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
+                                            <button title={t('search.message')} className="p-2.5 bg-white/5 hover:bg-green-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110">
                                                 <MessageSquare className="w-5 h-5" />
                                             </button>
                                         </div>
@@ -215,7 +218,7 @@ const SearchPage: React.FC = () => {
                                             onClick={() => handlePageChange(currentPage - 1)}
                                             disabled={currentPage === 1}
                                         >
-                                            Previous
+                                            {t('common.previous')}
                                         </button>
                                         
                                         {/* Simple pagination: showing current, prev, next or just numbers if few. 
@@ -247,13 +250,13 @@ const SearchPage: React.FC = () => {
                                             onClick={() => handlePageChange(currentPage + 1)}
                                             disabled={currentPage === totalPages}
                                         >
-                                            Next
+                                            {t('common.next')}
                                         </button>
                                     </div>
 
                                     {/* Records Per Page */}
                                     <div className="flex items-center gap-2 bg-white/5 rounded-lg px-3 py-1 border border-white/5 hover:bg-white/10 transition-colors">
-                                        <span className="text-xs text-gray-400">Show:</span>
+                                        <span className="text-xs text-gray-400">{t('search.show')}</span>
                                         <select 
                                             value={itemsPerPage} 
                                             onChange={handleLimitChange}
