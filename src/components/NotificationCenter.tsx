@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useNotifications, useReadAllNotifications, useReadNotification } from '../services/notification.service';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
 // @ts-ignore
-import { NOTIFICATION_STATUS } from '../utils/enum';
+import { NOTIFICATION_STATUS, NOTIFICATION_TYPE } from '../utils/enum';
 
 interface NotificationCenterProps {
     isOpen: boolean;
@@ -66,6 +67,7 @@ const getNotificationMessage = (notification: NotificationItem, t: (key: string,
 
 const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const contentRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
     const [isAnimating, setIsAnimating] = useState(false);
@@ -154,6 +156,26 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
 
     const isUnread = (status: string) => status === NOTIFICATION_STATUS.UNREAD;
 
+    const handleNotificationClick = (notification: NotificationItem) => {
+        if (isUnread(notification.status)) {
+            readSingleNotification(notification.id, {
+                onSuccess: () => {
+                    setAllNotifications(prev => prev.map(n => 
+                        n.id === notification.id ? { ...n, status: NOTIFICATION_STATUS.READ } : n
+                    ));
+                }
+            });
+        }
+
+        if (notification.notification_type === NOTIFICATION_TYPE.FRIEND_REQUEST) {
+            navigate('/friends');
+            onClose();
+        } else if (notification.notification_type === NOTIFICATION_TYPE.FOLLOW_REQUEST) {
+            navigate('/follows');
+            onClose();
+        }
+    };
+
     return (
         <div className="fixed inset-0 z-50">
             {/* Backdrop */}
@@ -223,15 +245,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
                                     /* Unread Item (Brighter/Heavier) */
                                     <div
                                         key={`${notification.actor_id}-${notification.created_at}-${index}`}
-                                        onClick={() => {
-                                            readSingleNotification(notification.id, {
-                                                onSuccess: () => {
-                                                    setAllNotifications(prev => prev.map(n => 
-                                                        n.id === notification.id ? { ...n, status: NOTIFICATION_STATUS.READ } : n
-                                                    ));
-                                                }
-                                            });
-                                        }}
+                                        onClick={() => handleNotificationClick(notification)}
                                         className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(255,255,255,0.1)] transition-all duration-300 cursor-pointer relative group shadow-[0_4px_12px_rgba(0,0,0,0.2)]"
                                     >
                                         {/* Unread dot */}
@@ -257,6 +271,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
                                     /* Read Item (Dimmer/Lighter) */
                                     <div
                                         key={`${notification.actor_id}-${notification.created_at}-${index}`}
+                                        onClick={() => handleNotificationClick(notification)}
                                         className="p-4 rounded-xl bg-black/20 backdrop-blur-sm border border-transparent hover:border-white/10 hover:bg-white/5 transition-all duration-300 cursor-pointer group opacity-60 hover:opacity-100"
                                     >
                                         <div className="flex items-center gap-3 mb-2">
