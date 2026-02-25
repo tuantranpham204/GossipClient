@@ -101,7 +101,7 @@ export const declineRelation = async (relation_type, requester_id) => {
 };
 
 export const updateUserProfile = async (data) => {
-  return handleApiResponse(apiClient.put("/profiles/update", data));
+  return handleApiResponse(apiClient.patch("/profiles/update", data));
 };
 
 export const requestFriend = async (receiverId) => {
