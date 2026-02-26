@@ -173,6 +173,12 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, onClose
         } else if (notification.notification_type === NOTIFICATION_TYPE.FOLLOW_REQUEST) {
             navigate('/follows');
             onClose();
+        } else if (
+            notification.notification_type === NOTIFICATION_TYPE.PRIVATE_STRANGERS_ROOM_REQUEST || 
+            notification.notification_type === NOTIFICATION_TYPE.UNREAD_MESSAGE
+        ) {
+            navigate('/messages');
+            onClose();
         }
     };
 

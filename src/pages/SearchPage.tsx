@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import NavigationSidebar from '../components/NavigationSidebar';
-import { Search, UserCheck, UserPlus, CopyPlus, CopyCheck, MessageSquare, MessageSquareMore, Loader2, Eye, Clock, Ban, MessageSquareOff, User } from 'lucide-react';
+import { Search, UserCheck, UserPlus, CopyPlus, CopyCheck, MessageSquare, MessageSquareMore, Loader2, Eye, Clock, Ban, MessageSquareOff, User, CopySlash } from 'lucide-react';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
 import backgroundGif from '../assets/background.gif';
 import { useSearchUsers, requestFriend, requestFollow } from '../services/user.service';
@@ -211,7 +211,7 @@ const SearchPage: React.FC = () => {
                                             {
                                                 user.follow_status === USER_RELATION_STATUS.PENDING ? (
                                                     <button title={t('search.follow_request_sent')} className="p-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl transition-all hover:scale-110 relative group">
-                                                        <CopyPlus className="w-5 h-5" />
+                                                        <CopySlash className="w-5 h-5" />
                                                         <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></div>
                                                     </button>
                                                 ) : user.follow_status === USER_RELATION_STATUS.ACCEPTED ? (

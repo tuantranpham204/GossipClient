@@ -135,5 +135,22 @@
         "no_found": "No {{type}} found.",
         "more_options": "More Options",
         "message": "Message"
+    },
+    "home": {
+        "title": "Whispers",
+        "filter_accepted": "Accepted",
+        "filter_pending": "Pending",
+        "filter_declined": "Declined",
+        "filter_group": "Group Messages",
+        "search_placeholder": "Search whispers...",
+        "loading": "Loading...",
+        "group_coming_soon": "Group messages coming soon.",
+        "no_whispers": "No whispers found.",
+        "active_now": "Active now",
+        "chat_settings": "Chat Settings",
+        "add_attachment": "Add attachment",
+        "type_message": "Type a message...",
+        "add_emoji": "Add emoji",
+        "send_message": "Send message"
     }
 }

@@ -135,5 +135,22 @@
         "no_found": "Không tìm thấy {{type}}.",
         "more_options": "Tùy chọn khác",
         "message": "Nhắn tin"
+    },
+    "home": {
+        "title": "Lời thì thầm",
+        "filter_accepted": "Đã chấp nhận",
+        "filter_pending": "Đang chờ",
+        "filter_declined": "Bị từ chối",
+        "filter_group": "Tin nhắn nhóm",
+        "search_placeholder": "Tìm kiếm tin nhắn...",
+        "loading": "Đang tải...",
+        "group_coming_soon": "Tin nhắn nhóm sắp ra mắt.",
+        "no_whispers": "Không có tin nhắn nào.",
+        "active_now": "Đang hoạt động",
+        "chat_settings": "Cài đặt trò chuyện",
+        "add_attachment": "Thêm đính kèm",
+        "type_message": "Nhập tin nhắn...",
+        "add_emoji": "Thêm biểu tượng",
+        "send_message": "Gửi tin nhắn"
     }
 }
