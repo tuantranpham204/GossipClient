@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import NavigationSidebar from '../components/NavigationSidebar';
-import { Search, UserCheck, UserPlus, CopyPlus, CopyCheck, MessageSquare, Loader2, Eye, Clock, Ban } from 'lucide-react';
+import { Search, UserCheck, UserPlus, CopyPlus, CopyCheck, MessageSquare, MessageSquareMore, Loader2, Eye, Clock, Ban, MessageSquareOff, User } from 'lucide-react';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
 import backgroundGif from '../assets/background.gif';
 import { useSearchUsers, requestFriend, requestFollow } from '../services/user.service';
@@ -190,7 +190,7 @@ const SearchPage: React.FC = () => {
                                             {/* Friend Status Button */}
                                             {user.friend_status === USER_RELATION_STATUS.PENDING ? (
                                                 <button title={t('search.friend_request_sent')} className="p-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl transition-all hover:scale-110 relative group">
-                                                    <UserCheck className="w-5 h-5" />
+                                                    <User className="w-5 h-5" />
                                                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></div>
                                                 </button>
                                             ) : user.friend_status === USER_RELATION_STATUS.ACCEPTED ? (
@@ -208,33 +208,40 @@ const SearchPage: React.FC = () => {
                                             )}
 
                                             {/* Follow Status Button */}
-                                            {user.follow_status !== USER_RELATION_STATUS.NOT_FOLLOW && user.follow_status ? (
-                                                <button title={t('search.following')} className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-all hover:scale-110">
-                                                    <CopyCheck className="w-5 h-5" />
-                                                </button>
-                                            ) : (
-                                                <button 
-                                                    title={t('search.follow')} 
-                                                    onClick={() => handleFollowRequest(user.user_id)}
-                                                    className="p-2.5 bg-white/5 hover:bg-pink-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110"
-                                                >
-                                                    <CopyPlus className="w-5 h-5" />
-                                                </button>
-                                            )}
+                                            {
+                                                user.follow_status === USER_RELATION_STATUS.PENDING ? (
+                                                    <button title={t('search.follow_request_sent')} className="p-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl transition-all hover:scale-110 relative group">
+                                                        <CopyPlus className="w-5 h-5" />
+                                                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></div>
+                                                    </button>
+                                                ) : user.follow_status === USER_RELATION_STATUS.ACCEPTED ? (
+                                                    <button title={t('search.following')} className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-all hover:scale-110 relative group">
+                                                        <CopyCheck className="w-5 h-5" />
+                                                    </button>
+                                                ) : (
+                                                    <button 
+                                                        title={t('search.follow')} 
+                                                        onClick={() => handleFollowRequest(user.user_id)}
+                                                        className="p-2.5 bg-white/5 hover:bg-brand-600 hover:text-white rounded-xl transition-all text-gray-400 hover:scale-110"
+                                                    >
+                                                        <CopyPlus className="w-5 h-5" />
+                                                    </button>
+                                                )
+                                            }
                                             {/* Message Button */}
                                             {(() => {
                                                 const rType = roomTypes[user.user_id] || (user as any).room_type;
                                                 if (rType === ROOM_TYPE.PRIVATE_STRANGERS_PENDING) {
                                                     return (
                                                         <button title={t('search.request_pending')} onClick={() => handleMessageClick(user.user_id)} className="p-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl transition-all hover:scale-110">
-                                                            <Clock className="w-5 h-5" />
+                                                            <MessageSquareMore className="w-5 h-5" />
                                                         </button>
                                                     );
                                                 }
                                                 if (rType === ROOM_TYPE.PRIVATE_STRANGERS_DECLINED) {
                                                     return (
                                                         <button title={t('search.request_declined')} onClick={() => handleMessageClick(user.user_id)} className="p-2.5 bg-red-600/20 text-red-500 rounded-xl transition-all hover:scale-110">
-                                                            <Ban className="w-5 h-5" />
+                                                            <MessageSquareOff className="w-5 h-5" />
                                                         </button>
                                                     );
                                                 }
