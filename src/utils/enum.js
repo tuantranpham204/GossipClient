@@ -34,12 +34,26 @@ export const USER_RELATION_STATUS = {
 
 export const NOTIFICATION_TYPE = {
   UNREAD_MESSAGE: "unread_message",
-  PRIVATE_MESSAGE_STRANGERS_REQUEST: "private_message_strangers_request",
+  PRIVATE_STRANGERS_ROOM_REQUEST: "private_strangers_room_request",
   GROUP_JOIN_REQUEST: "group_join_request",
   FRIEND_REQUEST: "friend_request",
   FOLLOW_REQUEST: "follow_request",
   FRIEND_REQUEST_ACCEPTED: "friend_request_accepted",
   FOLLOW_REQUEST_ACCEPTED: "follow_request_accepted",
+};
+
+export const PRIVATE_STRANGERS_ROOM_STATUS = {
+  PENDING: "pending",
+  ACCEPTED: "accepted",
+  DECLINED: "declined",
+};
+
+export const ROOM_TYPE = {
+  PRIVATE_STRANGERS_DECLINED: "private_strangers_declined",
+  PRIVATE_STRANGERS_PENDING: "private_strangers_pending",
+  PRIVATE_STRANGERS: "private_strangers",
+  PRIVATE_FRIENDS: "private_friends",
+  GROUP_ROOM: "group_room",
 };
 
 export const NOTIFICATION_STATUS = {
@@ -56,12 +70,4 @@ export const RELATIONSHIP_STATUS = {
 export const MESSAGE_TYPE = {
   ORDINARY: 1,
   SYSTEM: 2,
-};
-
-export const ROOM_TYPE = {
-  PRIVATE_STRANGERS_DECLINED: -1,
-  PRIVATE_STRANGERS_PENDING: 0,
-  PRIVATE_STRANGERS: 1,
-  PRIVATE_FRIENDS: 2,
-  GROUP_ROOM: 3,
 };
