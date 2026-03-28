@@ -1,12 +1,14 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import NavigationSidebar from '../components/NavigationSidebar';
-import { useUserProfile, updateProfileImage, useProfileImage, updateUserProfile } from '../services/user.service';
+import { useUserProfile, updateProfileImage, useProfileImage, updateUserProfile, requestFriend, requestFollow } from '../services/user.service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, BadgeCheck, Mail, Cake, Heart, Camera, Settings, CopyPlus, UserPlus, Lock } from 'lucide-react';
+import { Loader2, BadgeCheck, Mail, Cake, Heart, Camera, Settings, CopyPlus, UserPlus, Lock, UserCheck, CopyCheck } from 'lucide-react';
 import ImageUploadModal from '../components/modals/ImageUploadModal';
 import UpdateProfileModal from '../components/modals/UpdateProfileModal';
 import defaultAvatar from '../assets/defaultAvatar.jpg';
+// @ts-ignore
+import { USER_RELATION_STATUS } from '../utils/enum';
 import backgroundGif from '../assets/background.gif';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
@@ -61,6 +63,26 @@ const ProfilePage: React.FC = () => {
     const openModal = (type: 'avatar' | 'bg_img') => {
         setUpdatingImage(type);
         setIsModalOpen(true);
+    };
+
+    const handleFriendRequest = async () => {
+        if (!user?.user_id) return;
+        try {
+            await requestFriend(user.user_id);
+            queryClient.invalidateQueries({ queryKey: ['user', userId] });
+        } catch (error) {
+            // Error is handled by apiClient toast
+        }
+    };
+
+    const handleFollowRequest = async () => {
+        if (!user?.user_id) return;
+        try {
+            await requestFollow(user.user_id);
+            queryClient.invalidateQueries({ queryKey: ['user', userId] });
+        } catch (error) {
+            // Error is handled by apiClient toast
+        }
     };
 
     if (isLoading) {
@@ -223,12 +245,40 @@ const ProfilePage: React.FC = () => {
                                     </button>
                                 ) : (
                                     <>
-                                        <button title="Add Friend" className="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors shadow-lg shadow-indigo-500/20">
-                                            <UserPlus className="w-5 h-5" />
-                                        </button>
-                                        <button title="Follow" className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors border border-white/5">
-                                            <CopyPlus className="w-5 h-5" />
-                                        </button>
+                                        {/* Friend Status Button */}
+                                        {user.friend_status === USER_RELATION_STATUS.PENDING ? (
+                                            <button title="Friend Request Sent" className="p-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl transition-colors relative group">
+                                                <UserCheck className="w-5 h-5" />
+                                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></div>
+                                            </button>
+                                        ) : user.friend_status === USER_RELATION_STATUS.ACCEPTED ? (
+                                            <button title="Friends" className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-colors relative group">
+                                                <UserCheck className="w-5 h-5" />
+                                            </button>
+                                        ) : (
+                                            <button 
+                                                title="Add Friend" 
+                                                onClick={handleFriendRequest}
+                                                className="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors shadow-lg shadow-indigo-500/20"
+                                            >
+                                                <UserPlus className="w-5 h-5" />
+                                            </button>
+                                        )}
+
+                                        {/* Follow Status Button */}
+                                        {user.follow_status !== USER_RELATION_STATUS.NOT_FOLLOW && user.follow_status ? (
+                                            <button title="Following" className="p-2.5 bg-green-600/20 text-green-500 rounded-xl transition-colors">
+                                                <CopyCheck className="w-5 h-5" />
+                                            </button>
+                                        ) : (
+                                            <button 
+                                                title="Follow" 
+                                                onClick={handleFollowRequest}
+                                                className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors border border-white/5"
+                                            >
+                                                <CopyPlus className="w-5 h-5" />
+                                            </button>
+                                        )}
                                     </>
                                 )}
                             </div>
